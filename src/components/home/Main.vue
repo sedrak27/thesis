@@ -9,15 +9,14 @@
         <DepartmentData
                 :prop-departmentData="departmentData"
                 :prop-pagesCount="departmentPagesCount"
-                v-on:currentPage="getCurrentPage"
         ></DepartmentData>
     </div>
 </template>
 
 <script>
 import axios from "axios";
-import Departments from "@/components/Home/Departments.vue";
-import DepartmentData from "@/components/Home/DepartmentData.vue";
+import Departments from "@/components/home/Departments.vue";
+import DepartmentData from "@/components/home/DepartmentData.vue";
 
 export default {
     name: "Main",
@@ -29,10 +28,6 @@ export default {
 
             this.departmentPagesCount = this.departmentData.length //Math.ceil(this.departmentData.length / 8);
         },
-
-        getCurrentPage: function (currentPage) {
-            this.currentPage = currentPage;
-        }
     },
 
     data () {

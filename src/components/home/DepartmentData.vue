@@ -17,6 +17,7 @@
 
 <script>
 import Pagination from "@/components/pagination/Pagination.vue";
+import axios from "axios";
 
 export default {
     name: "DepartmentData",
