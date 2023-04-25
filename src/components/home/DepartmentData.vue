@@ -1,6 +1,6 @@
 <template>
-    <div class="department-data-parent col-lg-11 d-flex flex-column justify-content-between align-items-center">
-        <div v-for="data of propDepartmentData" class="department-data text-center">
+    <div class="department-data-parent col-lg-11 d-flex flex-column justify-content-between align-items-center" ref="propDepartmentDataParent">
+        <div v-for="data of propDepartmentData" class="department-data text-center col-lg-12" ref="propDepartmentData">
             <span class="title font-weight-bold"><strong>{{ data.title }}</strong></span>
             <p ref="description" class="long-text description">{{ data.short_description }}</p>
         </div>
@@ -50,6 +50,10 @@ export default {
             countOfPages: null,
             currentPage: null,
         }
+    },
+
+    mounted() {
+        let a = this.$refs.propDepartmentDataParent.children;
     }
 }
 </script>
