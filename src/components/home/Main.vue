@@ -3,12 +3,14 @@
         <Departments
                 :prop-departments="data"
                 :prop-page="currentPage"
+                :prop-solutionNumber="solutionNumber"
                 v-on:departmentData="getDepartmentData"
         ></Departments>
 
         <DepartmentData
                 :prop-departmentData="departmentData"
                 :prop-pagesCount="departmentPagesCount"
+                v-on:solutionNumber="getSolutionNumber"
         ></DepartmentData>
     </div>
 </template>
@@ -25,9 +27,14 @@ export default {
     methods: {
         getDepartmentData(data) {
             this.departmentData = data;
-
-            this.departmentPagesCount = this.departmentData.length //Math.ceil(this.departmentData.length / 8);
+            console.log(this.departmentData);
+            this.departmentPagesCount = Math.ceil(this.departmentData.length / 8);
+            alert(this.departmentPagesCount);
         },
+
+        getSolutionNumber(number) {
+            localStorage.setItem('solution', JSON.stringify(this.departmentData[number]));
+        }
     },
 
     data () {
@@ -38,17 +45,15 @@ export default {
                 'Ֆիզիկա',
                 'Քիմիա',
             ],
-
             departmentData: null,
-
             departmentPagesCount: null,
-
             currentPage: null,
+            solutionNumber: null,
         }
     },
 
     mounted() {
-        axios.post('http://192.168.40.131:3000/')
+        axios.get('http://192.168.40.131:3000/')
             .then(response => {
                 this.data = response.data;
             })

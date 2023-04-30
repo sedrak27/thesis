@@ -1,19 +1,39 @@
 <template>
-    <Slider />
+    hello
 </template>
 
 <script>
-import Slider from "@/components/solutions/Slider.vue";
-
 export default {
     name: "Main",
-    components: {Slider},
+
+    props: {
+        propDepartmentData: Object,
+    },
+
+    methods: {
+        isImage: function (url) {
+            return /\.(jpg|jpeg|png|webp|avif|gif|svg)$/.test(url);
+        }
+    },
+
+    data () {
+        return {
+            departmentData: null,
+            currentDepartmentData: null,
+        }
+    },
+
+
 
     mounted() {
     }
+
 }
 </script>
 
 <style scoped>
-
+    img {
+        max-width: 350px;
+        max-height: 250px;
+    }
 </style>

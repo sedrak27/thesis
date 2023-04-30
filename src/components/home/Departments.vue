@@ -22,6 +22,7 @@ export default {
     props: {
         propDepartments: Array,
         propPage: Number,
+        propSolutionNumber: Number,
     },
 
     methods: {
@@ -33,9 +34,9 @@ export default {
 
             event.target.style = 'background-color: rgb(255, 255, 255, .7); color: #2c3e50;';
 
-            axios.get(`http://192.168.40.131:3000/departments/${this.propDepartments[event.target.value]}`)
+            axios.get(`http://192.168.40.131:3000/posts?category=${this.propDepartments[event.target.value]}`)
                 .then(response => {
-                    this.data = response.data
+                    this.data = response.data;
                 })
                 .catch(error => {
                     console.log(error);
@@ -45,52 +46,25 @@ export default {
         }
     },
 
-    data () {
+    data() {
         return {
             departments: null,
-            data: {
-                departmentData: [
-                    {
-                        title: 'Քառակուսի հավասարում',
-                        short_description: 'Այս վարժությունը լուծվում է․․․',
-                    },
-                    {
-                        title: 'Անհավասարություններ',
-                        short_description: 'Այս վարժությունը լուծվում է Այս վարժությունը լուծվում է Այս վարժությունը լուծվում է Այս վարժությունը լուծվում է Այս վարժությունը լուծվում է․․․',
-                    },
-                    {
-                        title: 'Հավասարություններ',
-                        short_description: 'Այս վարժությունը լուծվում է․․․',
-                    },
-                    {
-                        title: 'Հարթաչափություններ',
-                        short_description: 'Այս վարժությունը լուծվում է․․․',
-                    },
-                    {
-                        title: 'Քառակուսի հավասարում',
-                        short_description: 'Այս վարժությունը լուծվում է․․․',
-                    },
-                    {
-                        title: 'Անհավասարություններ',
-                        short_description: 'Այս վարժությունը լուծվում է․․․',
-                    },
-                    {
-                        title: 'Հավասարություններ',
-                        short_description: 'Այս վարժությունը լուծվում է․․․',
-                    },
-                    {
-                        title: 'Հարթաչափություններ',
-                        short_description: 'Այս վարժությունը լուծվում է․․․',
-                    },
-                ],
-            },
+            departmentsData: null,
         }
     },
 
     mounted() {
+        axios.get('http://192.168.40.131:3000/posts')
+            .then(response => {
+                this.$emit('departmentData', response.data);
+            })
+            .catch(error => {
+                console.log(error);
+            });
+
         this.departments = this.$refs.departments.querySelectorAll('li');
 
-        this.$emit('departmentData', this.data.departmentData);
+
     }
 }
 </script>

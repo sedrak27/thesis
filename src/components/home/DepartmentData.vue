@@ -1,16 +1,19 @@
 <template>
     <div class="department-data-parent col-lg-11 d-flex flex-column justify-content-between align-items-center" ref="propDepartmentDataParent">
-        <div v-for="data of propDepartmentData" class="department-data text-center col-lg-12" ref="propDepartmentData">
+        <router-link v-for="(data, index) of propDepartmentData" :key="index" @click="solution" class="department-data text-center col-lg-12 pt-3 d-flex flex-column align-items-center" ref="propDepartmentData" to="/solution">
+            <input type="hidden" :value="index">
             <span class="title font-weight-bold"><strong>{{ data.title }}</strong></span>
-            <p ref="description" class="long-text description">{{ data.short_description }}</p>
-        </div>
+            <p :aria-valuenow="index" class="long-text description col-lg-3">{{ data.description }}</p>
+        </router-link>
 
-        <span class="full-width-span"></span>
+        <hr>
 
         <Pagination
                 :prop-count="propPagesCount"
                 v-on:currentPage="getCurrentPage"
         ></Pagination>
+
+        <RouterView />
     </div>
 
 </template>
@@ -42,10 +45,14 @@ export default {
                 .catch(error => {
                     console.error(error);
                 });
-        }
+        },
+
+        solution: function (event) {
+            this.$emit('solutionNumber', event.target.ariaValueNow);
+        },
     },
 
-    data () {
+    data() {
         return {
             countOfPages: null,
             currentPage: null,
@@ -53,7 +60,15 @@ export default {
     },
 
     mounted() {
-        let a = this.$refs.propDepartmentDataParent.children;
+        const descriptions = document.getElementsByClassName('description');
+
+        for (let i = 0; i < descriptions.length; i++) {
+            const words = descriptions[i].innerHTML.split(' ')
+
+            if (words.length > 10) {
+                descriptions[i].innerHTML = words.splice(0, 10).join(' ') + "...";
+            }
+        }
     }
 }
 </script>
@@ -65,19 +80,21 @@ export default {
         color: #f2f2f2;
     }
 
+    .department-data:hover span, .department-data:hover p {
+        color: #f2f2f2;
+    }
+
     .department-data-parent{
         height: 85vh;
     }
 
-    /*.description {*/
-    /*    width: 250px;*/
-    /*    white-space: nowrap;*/
-    /*    overflow: hidden;*/
-    /*    text-overflow: ellipsis;*/
-    /*}*/
-
     .full-width-span {
         display: block;
+    }
+
+    .department-data {
+        text-decoration: none;
+        color: inherit;
     }
 
 </style>

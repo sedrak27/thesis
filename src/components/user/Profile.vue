@@ -6,9 +6,7 @@
                     <img :src="userData.avatar" class="card-img-top" alt="Profile Picture">
                     <div class="card-body">
                         <h5 class="card-title">{{ userData.full_name }}</h5>
-                        <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin quis diam ex. Integer
-                            id quam id elit consectetur fermentum at ac tortor. Ut eu mauris lobortis, mollis massa et, finibus
-                            tellus.</p>
+                        <p class="card-text">{{ userData.address }}</p>
                         <button class="btn btn-primary" @click="editProfile">Edit Profile</button>
                     </div>
                 </div>
@@ -86,7 +84,7 @@ export default {
         },
 
         changeProfileData() {
-            axios.post('http://192.168.40.131:3000/profile', this.userData, { 'Authorization': `Bearer ${this.token}` })
+            axios.post('http://192.168.40.131:3000/profile', this.userData, { header: {'Authorization': `Bearer ${this.token}`} })
                 .then(response => {
                     this.userData = response.data;
                 })
@@ -97,7 +95,7 @@ export default {
     },
 
     mounted() {
-        axios.get('http://192.168.40.131:3000/profile', {'Authorization': `Bearer ${this.token}`})
+        axios.get('http://192.168.40.131:3000/profile', { header: {'Authorization': `Bearer ${this.token}`} })
             .then(response => {
                 this.userData = response.data;
             })
