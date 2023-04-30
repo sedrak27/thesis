@@ -24,21 +24,26 @@
                         <router-link class="nav-link text-light" to="/solution/add">Ավելացնել փոստ</router-link>
                     </li>
                 </ul>
-                <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-                    <button class="btn btn-outline-primary" type="submit">Search</button>
 
-
-                    <router-link class="btn btn-primary" to="/registration">Logout</router-link>
-                </form>
+                <router-link v-if="isAuthorized" class="btn btn-primary" to="/login" @click="logout">Logout</router-link>
             </div>
         </div>
     </nav>
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
     name: "Header",
+
+    methods: {
+        logout: function () {
+            localStorage.removeItem('jwtToken');
+
+            window.location.href = '/login';
+        },
+    },
 
     data() {
         return {
@@ -62,5 +67,9 @@ export default {
 
     nav {
         background-color: #2c4d50;
+    }
+
+    form {
+        margin: 0 auto;
     }
 </style>

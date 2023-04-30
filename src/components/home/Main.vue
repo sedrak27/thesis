@@ -27,9 +27,7 @@ export default {
     methods: {
         getDepartmentData(data) {
             this.departmentData = data;
-            console.log(this.departmentData);
-            this.departmentPagesCount = Math.ceil(this.departmentData.length / 8);
-            alert(this.departmentPagesCount);
+            this.departmentPagesCount = Math.ceil(this.departmentData.length / 6);
         },
 
         getSolutionNumber(number) {

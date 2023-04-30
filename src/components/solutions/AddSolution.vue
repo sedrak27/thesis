@@ -9,8 +9,15 @@
                         <form id="formData" enctype="multipart/form-data">
                             <div class="row" ref="body">
                                 <div class="mb-3">
-                                    <label for="problem" class="form-label">Վերնագիր</label>
-                                    <input class="form-control" id="problem" ref="title" name="title">
+                                    <label for="title" class="form-label">Վերնագիր</label>
+                                    <input class="form-control" id="title" ref="title" name="title">
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="department" class="form-label">Բաժին</label>
+                                    <select class="form-control" name="department" id="department" ref="department">
+                                        <option v-for="department of departments" :value="department">{{ department }}</option>
+                                    </select>
                                 </div>
 
                                 <div class="mb-3">
@@ -32,8 +39,6 @@
                                 <div class="mb-3 d-flex flex-column">
                                     <div>
                                         <button class="btn btn-primary" type="button" @click="uploadFile">Նկար</button> &nbsp;&nbsp;
-
-                                        <!--                                        <button class="btn btn-primary" type="button" @click="addPicture">Նկար</button> &nbsp;-->
                                         <button class="btn btn-primary" type="button" @click="addText">Տեքստ</button>
                                     </div>
                                 </div>
@@ -41,17 +46,7 @@
                                 <div class="col-lg-12 d-flex justify-content-end">
                                     <button class="btn btn-primary" type="button" @click="saveSolutions">Պահպանել</button>
                                 </div>
-
                             </div>
-                            <!--                                <div class="col-lg-4">-->
-<!--                                    <div class="images-parent col-lg-12">-->
-<!--                                        <div v-for="(image, index) in solution" :key="index" class="images">-->
-<!--                                            <img :src="image.url" :alt="image.name">-->
-<!--                                            <button class="remove-image" :value="index" @click="removeImage">X</button>-->
-<!--                                        </div>-->
-<!--                                    </div>-->
-<!--                                    <button v-if="solution.length > 0" class="btn btn-primary mt-2" @click="clearImages">Մաքրել</button>-->
-<!--                                </div>-->
                         </form>
                     </div>
                 </div>
@@ -64,11 +59,8 @@
 import axios from "axios";
 import { Uploader } from "uploader";
 import { openUploadModal } from "@upload-io/vue-uploader";
-// import type { UploadWidgetOptions, UploadWidgetResult } from "uploader";
-// import type { PreventableEvent } from "@upload-io/vue-uploader";
 
 const uploader = Uploader({ apiKey: "public_12a1yBb77WrwonUXggpcvxVJFRZg" });
-
 
 export default {
     name: "AddSolution",
@@ -84,43 +76,22 @@ export default {
             solutionImageAsText: null,
             solutionDiv: null,
             steps: [],
+            departments: [
+                'Մաթեմատիկա',
+                'Ծրագրավորում',
+                'Ֆիզիկա',
+                'Քիմիա',
+            ],
         }
     },
 
     methods: {
         saveSolutions() {
-            if (!this.$refs.title.value) {
-                this.$refs.title.style = 'border: solid red 2px;';
-                this.$refs.title.placeholder = 'Դաշտը պարտադիր լրացվող է';
-
-                return;
-            } else {
-                this.$refs.title.style = 'border: solid green 2px;';
-            }
-
-            if (!this.$refs.problem.value) {
-                this.$refs.problem.style = 'border: solid red 2px;';
-                this.$refs.problem.placeholder = 'Դաշտը պարտադիր լրացվող է';
-
-                return;
-            } else {
-                this.$refs.problem.style = 'border: solid green 2px;';
-            }
-
-            if (!this.$refs.description.value) {
-                this.$refs.description.style = 'border: solid red 2px;';
-                this.$refs.description.placeholder = 'Դաշտը պարտադիր լրացվող է';
-
-                return;
-            } else {
-                this.$refs.description.style = 'border: solid green 2px;';
-            }
+            this.checkFields(this.$refs);
 
             if (!this.saveButton && this.$refs.solutions.hasChildNodes()) {
                 const form = document.getElementById("formData");
                 const formData = new FormData(form);
-
-                alert(JSON.stringify(this.token));
 
                 axios.post('http://192.168.40.131:3000/posts', {
                     title: formData.get('title'),
@@ -139,55 +110,39 @@ export default {
             }
         },
 
+        checkFields: function (fields) {
+            console.log(fields);
+            for (const field in fields) {
+                if (field !== 'body' && field !== 'solutions') {
+                    if (!this.$refs[field].value) {
+                        this.$refs[field].style = 'border: solid red 2px;';
+                        this.$refs[field].placeholder = 'Դաշտը պարտադիր լրացվող է';
+
+                    } else {
+                        this.$refs[field].style = 'border: solid green 2px;';
+                    }
+                }
+            }
+        },
+
         addText() {
             if (!this.saveButton) {
                 const div = document.createElement('div');
-                div.classList.add('mb-3');
+                div.classList.add('mb-3', 'd-flex');
+                div.setAttribute('id', ++this.currentSolution);
 
-                const label = document.createElement('label');
-                label.classList.add('form-label');
-                label.textContent = ++this.currentSolution;
+                const textarea = document.createElement('textarea');
+                textarea.classList.add('form-control');
+                textarea.classList.add('text');
 
-                const input = document.createElement('textarea');
-                input.classList.add('form-control');
-                input.classList.add('text');
-
-                div.appendChild(label);
-                div.appendChild(input);
+                div.appendChild(textarea);
+                div.appendChild(this.removeButton(this));
 
                 this.$refs.solutions.appendChild(div);
 
                 this.saveButton = true;
             }
         },
-
-        // addPicture(parentThis) {
-        //     alert(parentThis.saveButton);
-        //     if (!parentThis.saveButton) {
-        //         parentThis.div = document.createElement('div');
-        //         parentThis.div.classList.add('mb-3');
-        //
-        //         const label = document.createElement('label');
-        //         label.classList.add('form-label');
-        //         label.textContent = ++this.currentSolution;
-        //
-        //         const input = document.createElement('input');
-        //         input.classList.add('form-control');
-        //         input.setAttribute('name', 'solution-' + parentThis.currentSolution);
-        //         input.setAttribute('type', 'file');
-        //         input.setAttribute('accept', 'image/png, image/jpeg, image/jpg');
-        //         input.addEventListener('change', parentThis.handlePictureUpload.bind(parentThis));
-        //
-        //         this.div.appendChild(label);
-        //         this.div.appendChild(input);
-        //
-        //         console.log(parentThis.div);
-        //
-        //         parentThis.$refs.solutions.appendChild(parentThis.div);
-        //
-        //         this.saveButton = true;
-        //     }
-        // },
 
         save() {
             const inputs = this.$refs.solutions.querySelectorAll('div div .text');
@@ -203,21 +158,16 @@ export default {
                     return;
                 }
 
-                input.disabled = true
                 input.style = 'border: solid green 2px;';
             }
-
-
 
             this.saveButton = false;
         },
 
         handlePictureUpload(files, parentThis) {
             const imageSolutionDiv = document.createElement('div');
-
-            const label = document.createElement('label');
-            label.classList.add('form-label', 'col-lg-12');
-            label.textContent = ++parentThis.currentSolution;
+            imageSolutionDiv.classList.add('mb-3');
+            imageSolutionDiv.setAttribute('id', ++this.currentSolution);
 
             parentThis.solutionImage = document.createElement('img');
             parentThis.solutionImage.classList.add('mt-3');
@@ -233,12 +183,22 @@ export default {
             textarea.classList.add('form-control');
             textarea.setAttribute('row', '2');
 
+            const editButton = document.createElement('button');
+            editButton.innerHTML = 'Խմբագրել';
+            editButton.classList.add('btn', 'btn-primary');
+            editButton.value = this.currentSolution;
+            editButton.addEventListener('click', function (event) {
+                document.getElementById(this.value).remove();
+                parentThis.uploadFile(event);
+            });
+
             const div = document.createElement('div');
             div.classList.add('col-lg-12', 'd-flex', 'justify-content-between');
             div.appendChild(parentThis.solutionImage);
             div.appendChild(textarea);
+            div.appendChild(editButton);
+            div.appendChild(this.removeButton(parentThis));
 
-            imageSolutionDiv.appendChild(label);
             imageSolutionDiv.appendChild(div);
 
             parentThis.$refs.solutions.appendChild(imageSolutionDiv)
@@ -252,7 +212,7 @@ export default {
                     event,
                     uploader,
                     options: {
-                        multi: true
+                        multi: false
                     },
                     onComplete: (files) => {
                         if (files.length === 0) {
@@ -281,8 +241,31 @@ export default {
                     }
                 })
             }
+        },
+
+        removeButton: function (parentThis) {
+            const deleteButton = document.createElement('button');
+            deleteButton.innerText = 'Հեռացնել';
+            deleteButton.classList.add('btn', 'btn-danger');
+            deleteButton.value = this.currentSolution;
+            deleteButton.addEventListener('click', function () {
+                document.getElementById(this.value).remove();
+                parentThis.saveButton = false;
+            })
+
+            return deleteButton;
         }
     },
+
+    mounted() {
+        axios.get('http://192.168.40.131:3000/departments')
+            .then(response => {
+                this.departments = response.data;
+            })
+            .catch(error => {
+                console.log(error);
+            });
+    }
 }
 </script>
 

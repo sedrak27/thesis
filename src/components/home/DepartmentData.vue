@@ -1,19 +1,30 @@
 <template>
-    <div class="department-data-parent col-lg-11 d-flex flex-column justify-content-between align-items-center" ref="propDepartmentDataParent">
-        <router-link v-for="(data, index) of propDepartmentData" :key="index" @click="solution" class="department-data text-center col-lg-12 pt-3 d-flex flex-column align-items-center" ref="propDepartmentData" to="/solution">
-            <input type="hidden" :value="index">
-            <span class="title font-weight-bold"><strong>{{ data.title }}</strong></span>
-            <p :aria-valuenow="index" class="long-text description col-lg-3">{{ data.description }}</p>
-        </router-link>
+    <div class="col-lg-11">
+        <div class="searchDiv col-lg-11 d-flex justify-content-center mt-3">
+            <form @submit.prevent="search" class="d-flex col-lg-6" role="search">
+                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" v-model="searchData">
+                <button class="btn btn-outline-primary" type="submit">Որոնել</button> &nbsp;&nbsp;
+                <button class="btn btn-primary" type="button" @click="uploadFile">Որոնել նկարով</button>
+            </form>
+        </div>
 
-        <hr>
+        <div class="department-data-parent col-lg-11 d-flex flex-column justify-content-start align-items-center" ref="propDepartmentDataParent">
+            <router-link v-for="(data, index) of propDepartmentData" :key="index" @click="solution" class="department-data text-center col-lg-12 pt-3 d-flex flex-column align-items-center" ref="propDepartmentData" to="/solution">
+                <input type="hidden" :value="index">
+                <span class="title font-weight-bold"><strong>{{ data.title }}</strong></span>
+                <p :aria-valuenow="index" class="long-text description col-lg-3">{{ handleDescription(data.description) }}</p>
+            </router-link>
 
-        <Pagination
-                :prop-count="propPagesCount"
-                v-on:currentPage="getCurrentPage"
-        ></Pagination>
+            <hr>
 
-        <RouterView />
+            <Pagination
+                    class="pagination"
+                    :prop-count="propPagesCount"
+                    v-on:currentPage="getCurrentPage"
+            ></Pagination>
+
+            <RouterView />
+        </div>
     </div>
 
 </template>
@@ -21,6 +32,10 @@
 <script>
 import Pagination from "@/components/pagination/Pagination.vue";
 import axios from "axios";
+import { Uploader } from "uploader";
+import { openUploadModal } from "@upload-io/vue-uploader";
+
+const uploader = Uploader({ apiKey: 'public_12a1yBb77WrwonUXggpcvxVJFRZg' });
 
 export default {
     name: "DepartmentData",
@@ -33,10 +48,14 @@ export default {
 
     methods: {
         getCurrentPage: function (currentPage) {
-
+            console.log({
+                skip: 8 * (currentPage - 1),
+                limit: 8,
+            });
             axios.get('http://192.168.40.131:3000/departments/', {
                 params: {
-                    page: currentPage,
+                    offset: 8 * (currentPage - 1),
+                    limit: 8,
                 }
             })
                 .then(response => {
@@ -50,26 +69,61 @@ export default {
         solution: function (event) {
             this.$emit('solutionNumber', event.target.ariaValueNow);
         },
+
+        uploadFile(event) {
+            if (!this.saveButton) {
+                openUploadModal({
+                    event,
+                    uploader,
+                    options: {
+                        multi: false
+                    },
+                    onComplete: (files) => {
+                        if (files.length === 0) {
+                            alert("No files selected.");
+                        } else {
+                            axios.post(
+                                'http://192.168.40.131:3000/search/picture',
+                                { url: files.map(f => f.fileUrl).join("\n") },
+                            ).then(response => {
+                                this.propDepartmentData = response.data;
+                            }).catch(error => {
+                                alert('Ինչ որ բան սխալ ընթացավ');
+                            });
+                        }
+                    }
+                })
+            }
+        },
+
+        search: function () {
+            axios.post('http://192.168.40.131:3000/search', { search_data: this.searchData })
+                .then(response => {
+                    this.propDepartmentData = response.data;
+                })
+                .catch(error => {
+                    alert('Ինչ որ բան սխալ ընթացավ');
+                });
+
+            this.$emit('currentPage', this.pageName);
+        },
+
+        handleDescription: function (description) {
+            if (description.length > 30) {
+                return description.slice(0, 30) + "...";
+            }
+
+            return description;
+        }
     },
 
     data() {
         return {
             countOfPages: null,
             currentPage: null,
+            searchData: null,
         }
     },
-
-    mounted() {
-        const descriptions = document.getElementsByClassName('description');
-
-        for (let i = 0; i < descriptions.length; i++) {
-            const words = descriptions[i].innerHTML.split(' ')
-
-            if (words.length > 10) {
-                descriptions[i].innerHTML = words.splice(0, 10).join(' ') + "...";
-            }
-        }
-    }
 }
 </script>
 
@@ -85,16 +139,20 @@ export default {
     }
 
     .department-data-parent{
-        height: 85vh;
-    }
-
-    .full-width-span {
-        display: block;
+        height: 75vh;
     }
 
     .department-data {
         text-decoration: none;
         color: inherit;
+    }
+
+    .searchDiv {
+        max-height: 10vh;
+    }
+
+    .pagination {
+        margin-top: 15vh;
     }
 
 </style>
