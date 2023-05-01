@@ -81,6 +81,7 @@ export default {
     mounted() {
         axios.get('http://192.168.40.131:3000/posts')
             .then(response => {
+                console.log(response.data);
                 this.$emit('departmentData', response.data);
             })
             .catch(error => {

@@ -102,6 +102,8 @@ export default {
                     headers: {'Authorization': `Bearer ${this.token}`}
                 }).then(response => {
                     this.userData = response.data;
+
+                    window.location.href = '/posts';
                 }).catch(error => {
                     console.log(error);
                 });
@@ -208,33 +210,29 @@ export default {
 
         uploadFile(event) {
             if (!this.saveButton) {
+                let text;
                 openUploadModal({
                     event,
                     uploader,
                     options: {
                         multi: false
                     },
-                    onComplete: (files) => {
+                    onComplete: async (files) => {
                         if (files.length === 0) {
                             alert("No files selected.");
                         } else {
+                            const fileUrl = files[0].originalFile.fileUrl;
+                            console.log(fileUrl)
+                            const {data: {text, latex, wolfram}} = await axios.post(
+                                'http://192.168.40.131:3000/photo',
+                                { url: fileUrl }
+                            )
 
-                            axios.post(
-                                'http://192.168.40.131:3000/solution/picture',
-                                { url: files.map(f => f.fileUrl).join("\n") },
-                                { 'Authorization': `Bearer ${this.token}` }
-                            ).then(response => {
-                                this.solutionImageAsText = response.data.text;
-
-                                this.steps.push({
-                                    title: 'a+b=babkenchik', //response.data.text,
-                                    content_url: files.map(f => f.fileUrl).join("\n"),
-                                })
-                            }).catch(error => {
-                                // console.log(error);
+                            this.solutionImageAsText = `${text ? `Text \n ${text}` : ''} \n\n ${latex ? `Latex \n ${latex}` : ''} \n\n ${wolfram ? `Wolfram \n ${wolfram}` : ''} \n\n`;
+                            this.steps.push({
+                                title: latex,
+                                content_url: fileUrl,
                             });
-
-                            this.solutionImageAsText = "a+b=babken";
 
                             this.handlePictureUpload(files, this);
                         }
@@ -256,16 +254,6 @@ export default {
             return deleteButton;
         }
     },
-
-    mounted() {
-        axios.get('http://192.168.40.131:3000/departments')
-            .then(response => {
-                this.departments = response.data;
-            })
-            .catch(error => {
-                console.log(error);
-            });
-    }
 }
 </script>
 

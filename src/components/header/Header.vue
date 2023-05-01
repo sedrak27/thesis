@@ -7,7 +7,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0" >
                     <li class="nav-item">
-                        <router-link to="/" class="navbar-brand logo" href="#">
+                        <router-link to="/posts" class="navbar-brand logo" href="#">
                             <img src="../../assets/pictures/logo.png" alt="logo" width="75" height="50">
                         </router-link>
                     </li>
@@ -67,6 +67,7 @@ export default {
 
     nav {
         background-color: #2c4d50;
+        padding: 10px 30px 10px 30px;
     }
 
     form {

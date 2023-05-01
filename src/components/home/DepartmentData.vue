@@ -2,7 +2,7 @@
     <div class="col-lg-11">
         <div class="searchDiv col-lg-11 d-flex justify-content-center mt-3">
             <form @submit.prevent="search" class="d-flex col-lg-6" role="search">
-                <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" v-model="searchData">
+                <input class="form-control me-2" type="search" placeholder="Որոնել" aria-label="Search" v-model="searchData">
                 <button class="btn btn-outline-primary" type="submit">Որոնել</button> &nbsp;&nbsp;
                 <button class="btn btn-primary" type="button" @click="uploadFile">Որոնել նկարով</button>
             </form>
@@ -82,13 +82,16 @@ export default {
                         if (files.length === 0) {
                             alert("No files selected.");
                         } else {
+                            const fileUrl = files[0].originalFile.fileUrl;
+
                             axios.post(
-                                'http://192.168.40.131:3000/search/picture',
-                                { url: files.map(f => f.fileUrl).join("\n") },
+                                'http://192.168.40.131:3000/search/photo',
+                                { url: fileUrl },
                             ).then(response => {
-                                this.propDepartmentData = response.data;
+                                // this.propDepartmentData = response.data.post_ids;
+                                console.log(response.data.post_ids);
                             }).catch(error => {
-                                alert('Ինչ որ բան սխալ ընթացավ');
+                                console.log(error.message);
                             });
                         }
                     }
@@ -97,9 +100,10 @@ export default {
         },
 
         search: function () {
-            axios.post('http://192.168.40.131:3000/search', { search_data: this.searchData })
+            axios.post('http://192.168.40.131:3000/search/text', { text: this.searchData })
                 .then(response => {
-                    this.propDepartmentData = response.data;
+                    console.log(response.data);
+                    // this.propDepartmentData = response.data;
                 })
                 .catch(error => {
                     alert('Ինչ որ բան սխալ ընթացավ');

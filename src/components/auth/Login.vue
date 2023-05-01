@@ -47,7 +47,7 @@ export default {
                 .then(response => {
                     localStorage.setItem('jwtToken', response.data.access_token);
 
-                    window.location.href = '/';
+                    window.location.href = '/posts';
                 })
                 .catch(error => {
                     alert('sxal a ara');
