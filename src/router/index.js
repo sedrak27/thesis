@@ -31,9 +31,15 @@ const router = createRouter({
       component: Profile,
     },
     {
-      path: '/posts',
-      name: 'main',
-      component: Home,
+      path: "/",
+      redirect: { path: "/posts" },
+      children: [
+        {
+          path: '/posts',
+          name: 'main',
+          component: Home,
+        },
+      ],
     },
     {
       path: '/solution/add',
@@ -44,9 +50,6 @@ const router = createRouter({
       path: '/solution',
       name: 'solution',
       component: Main,
-      props: {
-        propDepartmentData: JSON.parse(localStorage.getItem('departmentData')),
-      }
     },
   ]
 })

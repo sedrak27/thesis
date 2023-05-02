@@ -1,16 +1,16 @@
 <template>
     <div class="parent-div d-flex">
+
         <Departments
                 :prop-departments="data"
                 :prop-page="currentPage"
                 :prop-solutionNumber="solutionNumber"
-                v-on:departmentData="getDepartmentData"
+                v-on:posts="getPosts"
         ></Departments>
 
         <DepartmentData
-                :prop-departmentData="departmentData"
+                :prop-posts="posts"
                 :prop-pagesCount="departmentPagesCount"
-                v-on:solutionNumber="getSolutionNumber"
         ></DepartmentData>
     </div>
 </template>
@@ -25,14 +25,10 @@ export default {
     components: {DepartmentData, Departments},
 
     methods: {
-        getDepartmentData(data) {
-            this.departmentData = data;
-            this.departmentPagesCount = Math.ceil(this.departmentData.length / 6);
+        getPosts(posts) {
+            this.posts = posts;
+            this.departmentPagesCount = Math.ceil(this.posts.length / 6);
         },
-
-        getSolutionNumber(number) {
-            localStorage.setItem('solution', JSON.stringify(this.departmentData[number]));
-        }
     },
 
     data () {
@@ -43,12 +39,16 @@ export default {
                 'Ֆիզիկա',
                 'Քիմիա',
             ],
-            departmentData: null,
+            posts: null,
             departmentPagesCount: null,
             currentPage: null,
             solutionNumber: null,
         }
     },
+
+    mounted() {
+        console.log(this.departmentPagesCount);
+    }
 }
 </script>
 

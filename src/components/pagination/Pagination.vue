@@ -1,9 +1,9 @@
 <template>
-    <nav aria-label="Page navigation example" class="d-flex justify-content-center">
+    <nav v-if="propCount > 0" aria-label="Page navigation example" class="d-flex justify-content-center">
         <ul class="pagination" ref="pages">
             <li class="page-item" @click="previous"><span class="page-link" href="#" aria-label="Previous">&laquo;</span></li>
             <li v-for="page in propCount" class="page-item" @click="pageItem">
-                <span :class="{currentpage: currentPage === page}" class="page-link pages" :ref="page" v-if="page > this.pivot - 2 && page < this.pivot + 2" >{{ page }}</span>
+                <span :class="{'current-page': currentPage === page}" class="page-link pages" :ref="page" v-if="page > this.pivot - 2 && page < this.pivot + 2" >{{ page }}</span>
             </li>
             <li class="page-item" @click="next"><span class="page-link" href="#" aria-label="Next">&raquo;</span></li>
         </ul>
@@ -20,6 +20,7 @@ export default {
 
     methods: {
         next: function () {
+            alert(this.propCount)
             for (const page of this.pages) {
                 page.style.backgroundColor = null;
                 page.style.color = null;
@@ -79,7 +80,9 @@ export default {
     },
 
     mounted() {
-        this.pages = this.$refs.pages.querySelectorAll('li span');
+        console.log(this.propCount)
+        console.log(this.$refs)
+        // this.pages = this.$refs.pages.querySelectorAll('li span');
     }
 }
 </script>
@@ -100,8 +103,22 @@ export default {
         cursor: pointer;
     }
 
-    .currentpage {
+    .current-page {
         background-color: #2c4d50;
         color: #f2f2f2;
+    }
+    nav {
+        position: relative;
+        width: 100%;
+        height: 10%;
+        display: flex;
+        align-items: end;
+        justify-content: end;
+    }
+
+    ul {
+        position: absolute;
+
+        background-color: #f1f1f1;
     }
 </style>

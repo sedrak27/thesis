@@ -8,17 +8,33 @@
             </form>
         </div>
 
-        <div class="department-data-parent col-lg-11 d-flex flex-column justify-content-start align-items-center" ref="propDepartmentDataParent">
-            <router-link v-for="(data, index) of propDepartmentData" :key="index" @click="solution" class="department-data text-center col-lg-12 pt-3 d-flex flex-column align-items-center" ref="propDepartmentData" to="/solution">
-                <input type="hidden" :value="index">
-                <span class="title font-weight-bold"><strong>{{ data.title }}</strong></span>
-                <p :aria-valuenow="index" class="long-text description col-lg-3">{{ handleDescription(data.description) }}</p>
+        <div class="department-data-parent col-lg-12 d-flex flex-column justify-content-start align-items-center mt-5" ref="propDepartmentDataParent">
+            <router-link v-for="post of propPosts" @click="solution(post._id)" class="department-data text-center col-lg-12 pt-2 pb-2 d-flex justify-content-around" ref="posts" to="/solution">
+<!--                <div class="col-lg-2 d-flex justify-content-center align-items-center">-->
+<!--                    <p>{{ post.category }}</p>-->
+<!--                </div>-->
+
+                <div class="col-lg-2">
+                    <img v-if="post.cover_url" :src="post.cover_url" :alt="post.cover_url" width="150" height="75">
+                </div>
+
+                <div class="col-lg-2 d-flex flex-column justify-content-center align-items-center">
+                    <span class="title font-weight-bold"><strong>{{ post.title }}</strong></span>
+                    <p class="long-text description">{{ handleDescription(post.description) }}</p>
+                </div>
+
+                <div class="col-lg-2 d-flex justify-content-center align-items-center">
+                    <router-link to="/user/posts" class="user-name" @click="userPosts(post.owner_id)">{{ post.first_name + ' ' + post.last_name }}</router-link>
+                </div>
+
+                <div class="col-lg-2 d-flex justify-content-center align-items-center">
+                    <p>{{ Date(post.created) }}</p>
+                </div>
             </router-link>
 
             <hr>
 
             <Pagination
-                    class="pagination"
                     :prop-count="propPagesCount"
                     v-on:currentPage="getCurrentPage"
             ></Pagination>
@@ -42,32 +58,35 @@ export default {
     components: { Pagination },
 
     props: {
-        propDepartmentData: Array,
+        propPosts: Array,
         propPagesCount: Number,
     },
 
     methods: {
         getCurrentPage: function (currentPage) {
             console.log({
-                skip: 8 * (currentPage - 1),
-                limit: 8,
+                skip: 6 * (currentPage - 1),
+                limit: 6,
             });
             axios.get('http://192.168.40.131:3000/departments/', {
                 params: {
-                    offset: 8 * (currentPage - 1),
-                    limit: 8,
+                    offset: 6 * (currentPage - 1),
+                    limit: 6,
                 }
             })
                 .then(response => {
-                    this.propDepartmentData = response.data;
+                    this.posts = response.data;
                 })
                 .catch(error => {
                     console.error(error);
                 });
         },
 
-        solution: function (event) {
-            this.$emit('solutionNumber', event.target.ariaValueNow);
+        solution: function (post_id) {
+            localStorage.removeItem('post_id');
+
+            localStorage.setItem('post_id', post_id);
+            // this.$emit('solutionNumber', event.target.ariaValueNow);
         },
 
         uploadFile(event) {
@@ -88,8 +107,8 @@ export default {
                                 'http://192.168.40.131:3000/search/photo',
                                 { url: fileUrl },
                             ).then(response => {
-                                // this.propDepartmentData = response.data.post_ids;
-                                console.log(response.data.post_ids);
+                                // this.posts = response.post.post_ids;
+                                console.log(response.post.post_ids);
                             }).catch(error => {
                                 console.log(error.message);
                             });
@@ -103,7 +122,7 @@ export default {
             axios.post('http://192.168.40.131:3000/search/text', { text: this.searchData })
                 .then(response => {
                     console.log(response.data);
-                    // this.propDepartmentData = response.data;
+                    // this.posts = response.data;
                 })
                 .catch(error => {
                     alert('Ինչ որ բան սխալ ընթացավ');
@@ -118,6 +137,10 @@ export default {
             }
 
             return description;
+        },
+
+        userPosts: function (owner_id) {
+            localStorage.setItem('owner_id', owner_id);
         }
     },
 
@@ -155,8 +178,9 @@ export default {
         max-height: 10vh;
     }
 
-    .pagination {
-        margin-top: 15vh;
+    .user-name {
+        text-decoration: none;
+        color: inherit;
     }
 
 </style>

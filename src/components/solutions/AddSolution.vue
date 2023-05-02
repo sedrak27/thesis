@@ -22,7 +22,11 @@
 
                                 <div class="mb-3">
                                     <label for="problem" class="form-label">Խնդիր</label>
-                                    <textarea class="form-control" id="problem" rows="3" ref="problem" name="problem"></textarea>
+                                    <div class="d-flex">
+                                        <textarea class="form-control" id="problem" rows="3" ref="problem" name="problem"></textarea>
+                                        <button class="btn btn-primary" type="button" @click="uploadFile">Խնդրի նկար</button>
+
+                                    </div>
                                 </div>
 
                                 <div class="mb-3">
@@ -149,9 +153,12 @@ export default {
         save() {
             const inputs = this.$refs.solutions.querySelectorAll('div div .text');
 
-            this.steps.push({
-                title: inputs[inputs.length - 1].value,
-            });
+            this.steps[this.currentSolution] = {
+                title: inputs[inputs.length - 1].value
+            };
+
+            console.log(this.steps)
+
 
             for (const input of inputs) {
                 if (!input.value) {
@@ -191,6 +198,7 @@ export default {
             editButton.value = this.currentSolution;
             editButton.addEventListener('click', function (event) {
                 document.getElementById(this.value).remove();
+                parentThis.steps.splice(+this.value, 1)
                 parentThis.uploadFile(event);
             });
 
@@ -222,17 +230,16 @@ export default {
                             alert("No files selected.");
                         } else {
                             const fileUrl = files[0].originalFile.fileUrl;
-                            console.log(fileUrl)
                             const {data: {text, latex, wolfram}} = await axios.post(
                                 'http://192.168.40.131:3000/photo',
                                 { url: fileUrl }
                             )
 
                             this.solutionImageAsText = `${text ? `Text \n ${text}` : ''} \n\n ${latex ? `Latex \n ${latex}` : ''} \n\n ${wolfram ? `Wolfram \n ${wolfram}` : ''} \n\n`;
-                            this.steps.push({
+                            this.steps[this.currentSolution] = {
                                 title: latex,
                                 content_url: fileUrl,
-                            });
+                            };
 
                             this.handlePictureUpload(files, this);
                         }
@@ -248,6 +255,7 @@ export default {
             deleteButton.value = this.currentSolution;
             deleteButton.addEventListener('click', function () {
                 document.getElementById(this.value).remove();
+                parentThis.steps.splice(+this.value, 1);
                 parentThis.saveButton = false;
             })
 
