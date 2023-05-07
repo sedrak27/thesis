@@ -6,6 +6,7 @@ import Profile from "@/components/user/Profile.vue";
 import Home from "@/components/home/Main.vue";
 import AddSolution from "@/components/solutions/AddSolution.vue";
 import Main from "@/components/solutions/Main.vue";
+import UserPosts from "@/components/user/UserPosts.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -50,6 +51,11 @@ const router = createRouter({
       path: '/solution',
       name: 'solution',
       component: Main,
+    },
+    {
+      path: '/user/posts',
+      name: 'UserPosts',
+      component: UserPosts,
     },
   ]
 })

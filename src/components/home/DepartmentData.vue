@@ -64,13 +64,9 @@ export default {
 
     methods: {
         getCurrentPage: function (currentPage) {
-            console.log({
-                skip: 6 * (currentPage - 1),
-                limit: 6,
-            });
             axios.get('http://192.168.40.131:3000/departments/', {
                 params: {
-                    offset: 6 * (currentPage - 1),
+                    skip: 6 * (currentPage - 1),
                     limit: 6,
                 }
             })
@@ -86,7 +82,6 @@ export default {
             localStorage.removeItem('post_id');
 
             localStorage.setItem('post_id', post_id);
-            // this.$emit('solutionNumber', event.target.ariaValueNow);
         },
 
         uploadFile(event) {
@@ -179,7 +174,6 @@ export default {
     }
 
     .user-name {
-        text-decoration: none;
         color: inherit;
     }
 

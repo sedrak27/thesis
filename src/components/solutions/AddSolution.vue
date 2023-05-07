@@ -23,9 +23,12 @@
                                 <div class="mb-3">
                                     <label for="problem" class="form-label">Խնդիր</label>
                                     <div class="d-flex">
+                                        <div class="problem-picture-div d-flex justify-content-end align-items-start">
+                                            <img class="problem-picture" ref="problemPicture">
+                                            <button v-if="removeButton" class="remove-problem-picture btn btn-danger d-flex justify-content-center align-items-center" ref="removeProblemPicture" @click="removeProblemPicture">X</button>
+                                        </div>
                                         <textarea class="form-control" id="problem" rows="3" ref="problem" name="problem"></textarea>
-                                        <button class="btn btn-primary" type="button" @click="uploadFile">Խնդրի նկար</button>
-
+                                        <button class="btn btn-primary" type="button" @click="uploadProblemPicture">Խնդրի նկար</button>
                                     </div>
                                 </div>
 
@@ -76,6 +79,7 @@ export default {
             images: [],
             currentSolution: 0,
             saveButton: false,
+            removeButton:false,
             solutionImage: null,
             solutionImageAsText: null,
             solutionDiv: null,
@@ -117,7 +121,6 @@ export default {
         },
 
         checkFields: function (fields) {
-            console.log(fields);
             for (const field in fields) {
                 if (field !== 'body' && field !== 'solutions') {
                     if (!this.$refs[field].value) {
@@ -218,7 +221,6 @@ export default {
 
         uploadFile(event) {
             if (!this.saveButton) {
-                let text;
                 openUploadModal({
                     event,
                     uploader,
@@ -260,7 +262,54 @@ export default {
             })
 
             return deleteButton;
-        }
+        },
+
+        removeProblemPicture: function () {
+            this.$refs.problem.textContent = '';
+            this.$refs.problemPicture.setAttribute('src', '');
+            this.removeButton = false;
+        },
+
+        uploadProblemPicture(event) {
+            openUploadModal({
+                event,
+                uploader,
+                options: {
+                    multi: false
+                },
+                onComplete: async (files) => {
+                    if (files.length === 0) {
+                        alert("No files selected.");
+                    } else {
+                        const fileUrl = files[0].originalFile.fileUrl;
+                        // const {data: {text, latex, wolfram}} = await axios.post(
+                        //     'http://192.168.40.131:3000/photo',
+                        //     { url: fileUrl }
+                        // )
+                        //
+                        // this.$refs.problem.textContent = `${text ? `Text \n ${text}` : ''} \n\n ${latex ? `Latex \n ${latex}` : ''} \n\n ${wolfram ? `Wolfram \n ${wolfram}` : ''} \n\n`;
+                        // this.$refs.problemPicture.setAttribute('src', fileUrl);
+                        //
+                        // this.steps[0] = {
+                        //     title: latex,
+                        //     content_url: fileUrl,
+                        // };
+
+                        this.$refs.problem.textContent = 'a+b=c';
+                        this.$refs.problemPicture.setAttribute('src', fileUrl);
+
+                        this.steps[0] = {
+                                title: 'a+b=c',
+                                content_url: fileUrl,
+                            };
+
+                        this.removeButton = true;
+
+                        alert(this.removeButton)
+                    }
+                }
+            })
+        },
     },
 }
 </script>
@@ -269,8 +318,28 @@ export default {
     .container {
         height: 75vh;
     }
+
     .card-body {
         overflow:scroll;
         height: 700px;
+    }
+
+    .problem-picture-div {
+        max-width: 350px;
+        max-height: 250px;
+        position: relative;
+    }
+
+    .remove-problem-picture {
+        position: absolute;
+        max-width: 20px;
+        max-height: 25px;
+        right: 7px;
+        top: 7px;
+    }
+
+    .problem-picture {
+        max-width: 350px;
+        max-height: 250px;
     }
 </style>

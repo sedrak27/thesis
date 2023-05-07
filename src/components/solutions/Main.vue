@@ -20,7 +20,10 @@
 
                                 <div class="mb-3">
                                     <label for="problem" class="form-label">Խնդիր</label>
-                                    <textarea class="form-control" id="problem" rows="3" ref="problem" name="problem" disabled>{{ currentDepartmentData.problem }}</textarea>
+                                    <div class="d-flex">
+                                        <img v-if="currentDepartmentData.steps[0].url" :src="currentDepartmentData.steps[0].url" class="problem-picture" ref="problemPicture" alt="problem-picture">
+                                        <textarea class="form-control" id="problem" rows="3" ref="problem" name="problem" disabled>{{ currentDepartmentData.problem }}</textarea>
+                                    </div>
                                 </div>
 
                                 <div class="mb-3">
@@ -74,7 +77,8 @@ export default {
                 created: '2023-05-01T12:12:16.564Z',
                 steps: [
                     {
-                        title: 'a+b=babken'
+                        title: 'a+b=babken',
+                        url: 'src/assets/pictures/solution1.jpg',
                     },
                     {
                         title: 'a+b=babken',
@@ -106,8 +110,6 @@ export default {
 
 
     mounted() {
-        console.log(`http://192.168.40.131:3000/solution/${localStorage.getItem('post_id')}`);
-
         axios.get(`http://192.168.40.131:3000/solution/${localStorage.getItem('post_id')}`)
             .then(response => {
 
@@ -122,6 +124,15 @@ export default {
 
 <style scoped>
     img {
+        max-width: 350px;
+        max-height: 250px;
+    }
+
+    .card-title a {
+        color: inherit;
+    }
+
+    .problem-picture {
         max-width: 350px;
         max-height: 250px;
     }
