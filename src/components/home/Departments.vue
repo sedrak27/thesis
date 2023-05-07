@@ -34,13 +34,14 @@ export default {
 
             event.target.style = 'background-color: rgb(255, 255, 255, .7); color: #2c3e50;';
 
-            axios.get(`http://192.168.40.131:3000/posts?category=${this.propDepartments[event.target.value]}`)
-                .then(response => {
-                    this.data = response.data;
-                })
-                .catch(error => {
-                    console.log(error);
-                });
+            axios.post(
+                `http://192.168.40.131:3000/posts/filter?skip=${0}&limit=${6}`,
+                { category: this.propDepartments[event.target.value] }
+            ).then(response => {
+                this.data = response.data;
+            }).catch(error => {
+                console.log(error);
+            });
 
             this.$emit('posts', this.data.posts);
         }
@@ -121,10 +122,14 @@ export default {
     },
 
     mounted() {
-        axios.get('http://192.168.40.131:3000/posts')
+
+        console.log(this.propPage);
+        axios.post(`http://192.168.40.131:3000/posts/filter?skip=${0}&limit=${6}`)
             .then(response => {
-                console.log(response.data);
-                this.$emit('posts', response.data);
+                this.$emit('countOfPages', response.data.count);
+                this.$emit('posts', response.data.posts);
+
+                console.log(response.data.posts);
             })
             .catch(error => {
                 console.log(error);

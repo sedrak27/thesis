@@ -1,19 +1,18 @@
 <template>
     <div class="col-lg-11">
         <div class="searchDiv col-lg-11 d-flex justify-content-center mt-3">
+            <button class="btn btn-warning" type="button" @click="wolfram">Լուծել Wolfram֊ով</button> &nbsp;&nbsp;
+            <button class="btn btn-warning" type="button" @click="latex">Ստանալ Latex֊ը</button> &nbsp;&nbsp;
+
             <form @submit.prevent="search" class="d-flex col-lg-6" role="search">
                 <input class="form-control me-2" type="search" placeholder="Որոնել" aria-label="Search" v-model="searchData">
                 <button class="btn btn-outline-primary" type="submit">Որոնել</button> &nbsp;&nbsp;
-                <button class="btn btn-primary" type="button" @click="uploadFile">Որոնել նկարով</button>
+                <button class="btn btn-primary" type="button" @click="uploadFile">Որոնել նկարով</button> &nbsp;&nbsp;
             </form>
         </div>
 
         <div class="department-data-parent col-lg-12 d-flex flex-column justify-content-start align-items-center mt-5" ref="propDepartmentDataParent">
             <router-link v-for="post of propPosts" @click="solution(post._id)" class="department-data text-center col-lg-12 pt-2 pb-2 d-flex justify-content-around" ref="posts" to="/solution">
-<!--                <div class="col-lg-2 d-flex justify-content-center align-items-center">-->
-<!--                    <p>{{ post.category }}</p>-->
-<!--                </div>-->
-
                 <div class="col-lg-2">
                     <img v-if="post.cover_url" :src="post.cover_url" :alt="post.cover_url" width="150" height="75">
                 </div>
@@ -28,14 +27,14 @@
                 </div>
 
                 <div class="col-lg-2 d-flex justify-content-center align-items-center">
-                    <p>{{ Date(post.created) }}</p>
+                    <p>{{ post.created.slice(0, 10) }}</p>
                 </div>
             </router-link>
 
             <hr>
 
             <Pagination
-                    :prop-count="propPagesCount"
+                    :prop-count="countOfPages"
                     v-on:currentPage="getCurrentPage"
             ></Pagination>
 
@@ -64,12 +63,8 @@ export default {
 
     methods: {
         getCurrentPage: function (currentPage) {
-            axios.get('http://192.168.40.131:3000/departments/', {
-                params: {
-                    skip: 6 * (currentPage - 1),
-                    limit: 6,
-                }
-            })
+            axios.post(
+                `http://192.168.40.131:3000/posts/filter?skip=${6 * (currentPage - 1)}&limit=${6}`)
                 .then(response => {
                     this.posts = response.data;
                 })
@@ -99,11 +94,14 @@ export default {
                             const fileUrl = files[0].originalFile.fileUrl;
 
                             axios.post(
-                                'http://192.168.40.131:3000/search/photo',
+                                `http://192.168.40.131:3000/search/photo?skip=${0}&limit=${6}`,
                                 { url: fileUrl },
                             ).then(response => {
-                                // this.posts = response.post.post_ids;
-                                console.log(response.post.post_ids);
+                                this.posts = response.data.posts;
+                                this.countOfPages = response.data.count;
+
+                                console.log(this.posts);
+                                console.log(response.data);
                             }).catch(error => {
                                 console.log(error.message);
                             });
@@ -136,6 +134,30 @@ export default {
 
         userPosts: function (owner_id) {
             localStorage.setItem('owner_id', owner_id);
+        },
+
+        wolfram: function (event) {
+            openUploadModal({
+                event,
+                uploader,
+                options: {
+                    multi: false
+                },
+                onComplete: async (files) => {
+                    if (files.length === 0) {
+                        alert("No files selected.");
+                    } else {
+                        const fileUrl = files[0].originalFile.fileUrl;
+                        const { data: { images } } = await axios.post(
+                            'http://192.168.40.131:3000/photo/solution',
+                            { url: fileUrl }
+                        )
+
+                        localStorage.setItem('wolframSolutionImages', JSON.stringify(images));
+                        window.location.href = '/wolfram/solution';
+                    }
+                }
+            })
         }
     },
 

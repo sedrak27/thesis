@@ -15,7 +15,7 @@
 
                                 <div class="mb-3">
                                     <label for="department" class="form-label">Բաժին</label>
-                                    <select class="form-control" name="department" id="department" ref="department">
+                                    <select class="form-control" name="category" id="department" ref="department">
                                         <option v-for="department of departments" :value="department">{{ department }}</option>
                                     </select>
                                 </div>
@@ -83,6 +83,7 @@ export default {
             solutionImage: null,
             solutionImageAsText: null,
             solutionDiv: null,
+            cover_url: null,
             steps: [],
             departments: [
                 'Մաթեմատիկա',
@@ -95,19 +96,33 @@ export default {
 
     methods: {
         saveSolutions() {
+
+
+
             this.checkFields(this.$refs);
 
             if (!this.saveButton && this.$refs.solutions.hasChildNodes()) {
                 const form = document.getElementById("formData");
                 const formData = new FormData(form);
 
+                console.log({
+                    title: formData.get('title'),
+                    problem: formData.get('problem'),
+                    category: formData.get('category'),
+                    cover_url: this.cover_url,
+                    description: formData.get('description'),
+                    steps: this.steps,
+                })
+
                 axios.post('http://192.168.40.131:3000/posts', {
                     title: formData.get('title'),
                     problem: formData.get('problem'),
+                    category: formData.get('category'),
+                    cover_url: this.cover_url,
                     description: formData.get('description'),
                     steps: this.steps,
                 }, {
-                    headers: {'Authorization': `Bearer ${this.token}`}
+                    headers: { 'Authorization': `Bearer ${this.token}` }
                 }).then(response => {
                     this.userData = response.data;
 
@@ -145,8 +160,9 @@ export default {
                 textarea.classList.add('text');
 
                 div.appendChild(textarea);
-                div.appendChild(this.removeButton(this));
+                //div.appendChild(this.removeButton(this));
 
+                console.log(this.$refs.solutions);
                 this.$refs.solutions.appendChild(div);
 
                 this.saveButton = true;
@@ -156,9 +172,9 @@ export default {
         save() {
             const inputs = this.$refs.solutions.querySelectorAll('div div .text');
 
-            this.steps[this.currentSolution] = {
+            this.steps.push({
                 title: inputs[inputs.length - 1].value
-            };
+            });
 
             console.log(this.steps)
 
@@ -210,7 +226,7 @@ export default {
             div.appendChild(parentThis.solutionImage);
             div.appendChild(textarea);
             div.appendChild(editButton);
-            div.appendChild(this.removeButton(parentThis));
+            //div.appendChild(this.removeButton(parentThis));
 
             imageSolutionDiv.appendChild(div);
 
@@ -232,16 +248,16 @@ export default {
                             alert("No files selected.");
                         } else {
                             const fileUrl = files[0].originalFile.fileUrl;
-                            const {data: {text, latex, wolfram}} = await axios.post(
+                            const {data: {latex, wolfram}} = await axios.post(
                                 'http://192.168.40.131:3000/photo',
                                 { url: fileUrl }
                             )
 
-                            this.solutionImageAsText = `${text ? `Text \n ${text}` : ''} \n\n ${latex ? `Latex \n ${latex}` : ''} \n\n ${wolfram ? `Wolfram \n ${wolfram}` : ''} \n\n`;
-                            this.steps[this.currentSolution] = {
-                                title: latex,
+                            this.solutionImageAsText = `${latex ? `Latex \n ${latex}` : ''} \n\n ${wolfram ? `Wolfram \n ${wolfram}` : ''} \n\n`;
+                            this.steps.push({
+                                title: latex || '',
                                 content_url: fileUrl,
-                            };
+                            });
 
                             this.handlePictureUpload(files, this);
                         }
@@ -282,26 +298,15 @@ export default {
                         alert("No files selected.");
                     } else {
                         const fileUrl = files[0].originalFile.fileUrl;
-                        // const {data: {text, latex, wolfram}} = await axios.post(
-                        //     'http://192.168.40.131:3000/photo',
-                        //     { url: fileUrl }
-                        // )
-                        //
-                        // this.$refs.problem.textContent = `${text ? `Text \n ${text}` : ''} \n\n ${latex ? `Latex \n ${latex}` : ''} \n\n ${wolfram ? `Wolfram \n ${wolfram}` : ''} \n\n`;
-                        // this.$refs.problemPicture.setAttribute('src', fileUrl);
-                        //
-                        // this.steps[0] = {
-                        //     title: latex,
-                        //     content_url: fileUrl,
-                        // };
+                        const {data: {latex, wolfram}} = await axios.post(
+                            'http://192.168.40.131:3000/photo',
+                            { url: fileUrl }
+                        )
 
-                        this.$refs.problem.textContent = 'a+b=c';
+                        this.$refs.problem.textContent = `${latex ? `Latex \n ${latex}` : ''} \n\n ${wolfram ? `Wolfram \n ${wolfram}` : ''} \n\n`;
                         this.$refs.problemPicture.setAttribute('src', fileUrl);
 
-                        this.steps[0] = {
-                                title: 'a+b=c',
-                                content_url: fileUrl,
-                            };
+                        this.cover_url = fileUrl;
 
                         this.removeButton = true;
 
@@ -320,7 +325,7 @@ export default {
     }
 
     .card-body {
-        overflow:scroll;
+        overflow-y: scroll;
         height: 700px;
     }
 

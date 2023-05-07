@@ -4,38 +4,46 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body col-lg-12">
-                        <h5 class="card-title"><router-link to="/user/posts" @click="userPosts(currentDepartmentData.owner_id)"> {{ currentDepartmentData.first_name + ' ' + currentDepartmentData.last_name }} </router-link></h5>
+                        <h5 class="card-title">
+                            <router-link to="/user/posts" @click="userPosts(currentDepartmentData.post.owner_id)">
+                                {{ currentDepartmentData.post.first_name + ' ' + currentDepartmentData.post.last_name }}
+                            </router-link>
+                        </h5>
                         <hr>
                         <div id="formData">
                             <div class="row" ref="body">
                                 <div class="mb-3">
                                     <label for="title" class="form-label">Վերնագիր</label>
-                                    <input class="form-control" id="title" :value="currentDepartmentData.title" readonly>
+                                    <input class="form-control" id="title" :value="currentDepartmentData.post.title"
+                                           readonly>
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="department" class="form-label">Բաժին</label>
-                                    <input class="form-control" id="department" :value="currentDepartmentData.category" readonly>
+                                    <input class="form-control" id="department" :value="currentDepartmentData.post.category"
+                                           readonly>
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="problem" class="form-label">Խնդիր</label>
                                     <div class="d-flex">
-                                        <img v-if="currentDepartmentData.steps[0].url" :src="currentDepartmentData.steps[0].url" class="problem-picture" ref="problemPicture" alt="problem-picture">
-                                        <textarea class="form-control" id="problem" rows="3" ref="problem" name="problem" disabled>{{ currentDepartmentData.problem }}</textarea>
+                                        <img v-if="currentDepartmentData.post.cover_url"
+                                             :src="currentDepartmentData.post.cover_url" class="problem-picture"
+                                             ref="problemPicture" alt="problem-picture">
+                                        <textarea class="form-control" id="problem" rows="3" ref="problem" name="problem" disabled>{{ currentDepartmentData.post.problem }}</textarea>
                                     </div>
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="description" class="form-label">Նկարագրություն</label>
-                                    <textarea class="form-control" id="description" rows="3" disabled>{{ currentDepartmentData.description }}</textarea>
+                                    <textarea class="form-control" id="description" rows="3" disabled>{{ currentDepartmentData.post.description }}</textarea>
                                 </div>
 
                                 <div class="mb-3">
                                     <label class="form-label">Լուծում</label>
                                     <div v-for="step of currentDepartmentData.steps" class="mt-3">
                                         <div class="col-lg-12 d-flex">
-                                            <img v-if="step.url" :src="step.url" :alt="step.url">
+                                            <img v-if="step.content_url" :src="step.content_url" :alt="step.content_url">
                                             <textarea class="form-control" id="problem" rows="3" ref="problem" name="problem" disabled>{{ step.title }}</textarea>
                                         </div>
                                     </div>
@@ -61,58 +69,58 @@ export default {
         }
     },
 
-    data () {
+    data() {
         return {
             departmentData: null,
             currentDepartmentData: {
-                title: 'vernagir',
-                description: 'nkaragrutyun',
-                cover_url: 'asd',
-                problem: 'problem chka axpers',
-                category: 'Mathem',
-                _id: '644faca0da8a66bd4cd7e2a9',
-                owner_id: '644d7f27fcab5bbba42fc9de',
-                first_name: 'Babken',
-                last_name: 'Babkenyan',
-                created: '2023-05-01T12:12:16.564Z',
+                post: {
+                    _id: '644faca0da8a66bd4cd7e2a9',
+                    owner_id: '644d7f27fcab5bbba42fc9de',
+                    title: 'vernagir',
+                    description: 'nkaragrutyun',
+                    problem: 'problem chka axpers',
+                    category: 'Mathem',
+                    first_name: 'Babken',
+                    last_name: 'Babkenyan',
+                    created: '2023-05-01T12:12:16.564Z',
+                },
                 steps: [
                     {
                         title: 'a+b=babken',
-                        url: 'src/assets/pictures/solution1.jpg',
+                        content_url: 'src/assets/pictures/solution1.jpg',
                     },
                     {
                         title: 'a+b=babken',
-                        url: 'src/assets/pictures/solution1.jpg',
+                        content_url: 'src/assets/pictures/solution1.jpg',
                     },
                     {
                         title: 'a+b=babken'
                     },
                     {
                         title: 'a+b=babken',
-                        url: 'src/assets/pictures/solution2.jpg',
+                        content_url: 'src/assets/pictures/solution2.jpg',
                     },
                     {
                         title: 'a+b=babken'
                     },
                     {
                         title: 'a+b=babken',
-                        url: 'src/assets/pictures/solution3.jpg',
+                        content_url: 'src/assets/pictures/solution3.jpg',
 
                     },
                     {
                         title: 'a+b=babken'
                     },
                 ],
-    }
-    ,
+            },
         }
     },
 
-
     mounted() {
-        axios.get(`http://192.168.40.131:3000/solution/${localStorage.getItem('post_id')}`)
+        axios.get(`http://192.168.40.131:3000/posts/${localStorage.getItem('post_id')}`)
             .then(response => {
-
+                this.currentDepartmentData = response.data
+                console.log(this.currentDepartmentData);
             })
             .catch(error => {
 
@@ -123,17 +131,17 @@ export default {
 </script>
 
 <style scoped>
-    img {
-        max-width: 350px;
-        max-height: 250px;
-    }
+img {
+    max-width: 350px;
+    max-height: 250px;
+}
 
-    .card-title a {
-        color: inherit;
-    }
+.card-title a {
+    color: inherit;
+}
 
-    .problem-picture {
-        max-width: 350px;
-        max-height: 250px;
-    }
+.problem-picture {
+    max-width: 350px;
+    max-height: 250px;
+}
 </style>

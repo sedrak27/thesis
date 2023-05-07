@@ -1,5 +1,5 @@
 <template>
-    <nav v-if="propCount > 0" aria-label="Page navigation example" class="d-flex justify-content-center">
+    <nav v-if="propCount > 1" aria-label="Page navigation example" class="d-flex justify-content-center">
         <ul class="pagination" ref="pages">
             <li class="page-item" @click="previous"><span class="page-link" href="#" aria-label="Previous">&laquo;</span></li>
             <li v-for="page in propCount" class="page-item" @click="pageItem">

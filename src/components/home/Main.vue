@@ -6,6 +6,7 @@
                 :prop-page="currentPage"
                 :prop-solutionNumber="solutionNumber"
                 v-on:posts="getPosts"
+                v-on:countOfPosts="getCountOfPosts"
         ></Departments>
 
         <DepartmentData
@@ -27,8 +28,11 @@ export default {
     methods: {
         getPosts(posts) {
             this.posts = posts;
-            this.departmentPagesCount = Math.ceil(this.posts.length / 6);
         },
+
+        getCountOfPosts(countOfPosts) {
+            this.countOfPosts = Math.ceil(countOfPosts / 6);
+        }
     },
 
     data () {
@@ -40,9 +44,9 @@ export default {
                 'Քիմիա',
             ],
             posts: null,
-            departmentPagesCount: null,
             currentPage: null,
             solutionNumber: null,
+            countOfPosts: 0,
         }
     },
 

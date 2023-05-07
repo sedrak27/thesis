@@ -150,7 +150,7 @@ export default {
     },
 
     mounted() {
-        axios.get(`http://192.168.40.131:3000/user/posts?${localStorage.getItem('owner_id')}`)
+        axios.post(`http://192.168.40.131:3000/posts/filter`, { owner_id: localStorage.getItem('owner_id') })
             .then(response => {
                 this.posts = response.data;
 
