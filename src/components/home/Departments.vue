@@ -50,93 +50,21 @@ export default {
     data() {
         return {
             departments: null,
-            posts: [
-                {
-                    _id: '123123123asd1',
-                    category: 'Քիմիա',
-                    title: 'Քառակուսի հավասարում',
-                    description: 'Այս վարժությունը լուծվում է',
-                    owner_id: 'v123123123asd1',
-                    first_name: 'John',
-                    last_name: 'Legend',
-                    cover_url: 'src/assets/pictures/solution1.jpg',
-                    created: '2023-05-01T12:12:16.564Z',
-                },
-                {
-                    _id: '123123123asd2',
-                    category: 'Ծրագրավորում',
-                    title: 'Անհավասարություններ',
-                    description: 'Այս վարժությունը լուծվում է Այս վարժությունը լուծվում է Այս վարժությունը լուծվում է Այս վարժությունը լուծվում է Այս վարժությունը լուծվում է․․․',
-                    owner_id: 'v123123123asd2',
-                    first_name: 'John',
-                    last_name: 'Legend',
-                    cover_url: 'src/assets/pictures/solution2.jpg',
-                    created: '2023-05-01T12:12:16.564Z',
-                },
-                {
-                    _id: '123123123asd3',
-                    category: 'Քիմիա',
-                    title: 'Հավասարություններ',
-                    description: 'Այս վարժությունը լուծվում է Այս վարժությունը լուծվում է Այս վարժությունը լուծվում է Այս վարժությունը լուծվում է․․․Այս վարժությունը լուծվում է․․․Այս վարժությունը լուծվում է․․․Այս վարժությունը լուծվում է․․․Այս վարժությունը լուծվում է․․․Այս վարժությունը լուծվում է․․․Այս վարժությունը լուծվում է․․․',
-                    owner_id: 'v123123123asd3',
-                    first_name: 'John',
-                    last_name: 'Legend',
-                    cover_url: 'src/assets/pictures/solution3.jpg',
-                    created: '2023-05-01T12:12:16.564Z',
-                },
-                {
-                    _id: '123123123asd4',
-                    category: 'Ֆիզիկա',
-                    title: 'Հարթաչափություններ',
-                    description: 'Այս վարժությունը լուծվում է',
-                    owner_id: 'v123123123asd4',
-                    first_name: 'John',
-                    last_name: 'Legend',
-                    cover_url: 'src/assets/pictures/solution4.jpg',
-                    created: '2023-05-01T12:12:16.564Z',
-                },
-                {
-                    _id: '123123123asd5',
-                    category: 'Ծրագրավորում',
-                    title: 'Քառակուսի հավասարում',
-                    description: 'Այս վարժությունը լուծվում է',
-                    owner_id: 'v123123123asd5',
-                    first_name: 'John',
-                    last_name: 'Legend',
-                    cover_url: 'src/assets/pictures/solution5.jpg',
-                    created: '2023-05-01T12:12:16.564Z',
-                },
-                {
-                    _id: '123123123asd6',
-                    category: 'Մաթեմատիկա',
-                    title: 'Անհավասարություններ',
-                    description: 'Այս վարժությունը լուծվում է',
-                    owner_id: 'v123123123asd6',
-                    first_name: 'John',
-                    last_name: 'Legend',
-                    cover_url: 'src/assets/pictures/solution6.jpg',
-                    created: '2023-05-01T12:12:16.564Z',
-                },
-            ],
         }
     },
 
     mounted() {
-
         console.log(this.propPage);
         axios.post(`http://localhost:3000/posts/filter?skip=${0}&limit=${6}`)
             .then(response => {
                 this.$emit('countOfPages', response.data.count);
                 this.$emit('posts', response.data.posts);
-
-                console.log(response.data.posts);
             })
             .catch(error => {
-                console.log(error);
+                console.log(error.message);
             });
 
         this.departments = this.$refs.departments.querySelectorAll('li');
-console.log(this.posts)
         this.$emit('posts', this.posts)
     }
 }

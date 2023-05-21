@@ -6,12 +6,12 @@
                 :prop-page="currentPage"
                 :prop-solutionNumber="solutionNumber"
                 v-on:posts="getPosts"
-                v-on:countOfPosts="getCountOfPosts"
+                v-on:countOfPages="getCountOfPosts"
         ></Departments>
 
         <DepartmentData
                 :prop-posts="posts"
-                :prop-pagesCount="departmentPagesCount"
+                :prop-pagesCount="countOfPages"
         ></DepartmentData>
     </div>
 </template>
@@ -31,7 +31,7 @@ export default {
         },
 
         getCountOfPosts(countOfPosts) {
-            this.countOfPosts = Math.ceil(countOfPosts / 6);
+            this.countOfPages = Math.ceil(countOfPosts / 6);
         }
     },
 
@@ -46,7 +46,7 @@ export default {
             posts: null,
             currentPage: null,
             solutionNumber: null,
-            countOfPosts: 0,
+            countOfPages: 0,
         }
     },
 

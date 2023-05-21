@@ -1,6 +1,6 @@
 <template>
     <nav v-if="propCount > 1" aria-label="Page navigation example" class="d-flex justify-content-center">
-        <ul class="pagination" ref="pages">
+        <ul class="pagination">
             <li class="page-item" @click="previous"><span class="page-link" href="#" aria-label="Previous">&laquo;</span></li>
             <li v-for="page in propCount" class="page-item" @click="pageItem">
                 <span :class="{'current-page': currentPage === page}" class="page-link pages" :ref="page" v-if="page > this.pivot - 2 && page < this.pivot + 2" >{{ page }}</span>
@@ -80,9 +80,7 @@ export default {
     },
 
     mounted() {
-        console.log(this.propCount)
-        console.log(this.$refs)
-        // this.pages = this.$refs.pages.querySelectorAll('li span');
+        this.pages = document.getElementsByClassName('page-item');
     }
 }
 </script>

@@ -12,7 +12,7 @@
         </div>
 
         <div class="department-data-parent col-lg-12 d-flex flex-column justify-content-start align-items-center mt-5" ref="propDepartmentDataParent">
-            <router-link v-for="post of propPosts" @click="solution(post._id)" class="department-data text-center col-lg-12 pt-2 pb-2 d-flex justify-content-around" ref="posts" to="/solution">
+            <router-link v-for="post of searchPostsResult && searchPostsResult.length !== 0 ? searchPostsResult : propPosts" @click="solution(post._id)" class="department-data text-center col-lg-12 pt-2 pb-2 d-flex justify-content-around" ref="posts" to="/solution">
                 <div class="col-lg-2">
                     <img v-if="post.cover_url" :src="post.cover_url" :alt="post.cover_url" width="150" height="75">
                 </div>
@@ -34,7 +34,7 @@
             <hr>
 
             <Pagination
-                    :prop-count="countOfPages"
+                    :prop-count="propPagesCount"
                     v-on:currentPage="getCurrentPage"
             ></Pagination>
 
@@ -63,13 +63,12 @@ export default {
 
     methods: {
         getCurrentPage: async function (currentPage) {
-
             this.skipCount = 6 * (currentPage - 1);
 
             await axios.post(
                 `http://localhost:3000/posts/filter?skip=${this.skipCount}&limit=${6}`)
                 .then(response => {
-                    this.posts = response.data;
+                    this.searchPostsResult = response.data.posts;
                 })
                 .catch(error => {
                     console.error(error);
@@ -102,7 +101,7 @@ export default {
                                 `http://localhost:3000/search/photo?skip=${this.skipCount}&limit=${6}`,
                                 { url: fileUrl },
                             )
-
+                            alert('aaaaaaa' + count)
                             this.posts = posts;
                             this.countOfPages = count;
                         }
@@ -115,11 +114,12 @@ export default {
             this.skipCount = 0;
             await axios.post(`http://localhost:3000/search/text?skip=${this.skipCount}&limit=${6}`, { text: this.searchData })
                 .then(response => {
-                    console.log(response.data);
-                    this.posts = response.data;
+                    console.log(response.data.posts);
+                    this.searchPostsResult = response.data.posts;
                 })
                 .catch(error => {
-                    alert('Ինչ որ բան սխալ ընթացավ');
+                    console.log(error.message);
+                    //alert('Ինչ որ բան սխալ ընթացավ');
                 });
 
             this.$emit('currentPage', this.pageName);
@@ -192,6 +192,7 @@ export default {
             currentPage: null,
             searchData: null,
             skipCount: null,
+            searchPostsResult: null
         }
     },
 }
