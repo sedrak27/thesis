@@ -1,10 +1,11 @@
 <template>
     <div class="col-lg-12">
-        <div class="searchDiv col-lg-12 d-flex justify-content-center mt-3">
-            <h2>{{ posts[0].first_name + ' ' + posts[0].last_name }}</h2>
-        </div>
 
         <div class="department-data-parent col-lg-12 d-flex flex-column justify-content-start align-items-center mt-3" ref="propDepartmentDataParent">
+            <div class="search-div col-lg-12 d-flex justify-content-center mt-3">
+                <h2>{{ posts[0].first_name + ' ' + posts[0].last_name }}</h2>
+            </div>
+
             <router-link v-for="post of posts" @click="solution(post._id)" class="department-data text-center col-lg-12 pt-2 pb-2 d-flex justify-content-around" ref="propDepartmentData" to="/solution">
                 <div class="col-lg-2 d-flex justify-content-center align-items-center">
                     <p>{{ post.category }}</p>
@@ -20,7 +21,7 @@
                 </div>
 
                 <div class="col-lg-3 d-flex justify-content-center align-items-center">
-                    <p>{{ post.created }}</p>
+                    <p>{{ post.created.slice(0, 10) }}</p>
                 </div>
             </router-link>
 
@@ -180,10 +181,12 @@ export default {
 .department-data {
     text-decoration: none;
     color: inherit;
+    background-color: #f2f2f2;
 }
 
-.searchDiv {
-    max-height: 10vh;
+.search-div {
+    max-height: 150px;
+    background-color: #f2f2f2;
 }
 
 .user-name {

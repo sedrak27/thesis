@@ -6,7 +6,7 @@
 
             <form @submit.prevent="search" class="d-flex col-lg-6" role="search">
                 <input class="form-control me-2" type="search" placeholder="Որոնել" aria-label="Search" v-model="searchData">
-                <button class="btn btn-outline-primary" type="submit">Որոնել</button> &nbsp;&nbsp;
+                <button class="btn btn-success" type="submit">Որոնել</button> &nbsp;&nbsp;
                 <button class="btn btn-primary" type="button" @click="uploadFile">Որոնել նկարով</button> &nbsp;&nbsp;
             </form>
         </div>
@@ -62,9 +62,12 @@ export default {
     },
 
     methods: {
-        getCurrentPage: function (currentPage) {
-            axios.post(
-                `http://192.168.40.131:3000/posts/filter?skip=${6 * (currentPage - 1)}&limit=${6}`)
+        getCurrentPage: async function (currentPage) {
+
+            this.skipCount = 6 * (currentPage - 1);
+
+            await axios.post(
+                `http://192.168.40.131:3000/posts/filter?skip=${this.skipCount}&limit=${6}`)
                 .then(response => {
                     this.posts = response.data;
                 })
@@ -87,35 +90,33 @@ export default {
                     options: {
                         multi: false
                     },
-                    onComplete: (files) => {
+                    onComplete: async (files) => {
+                        this.skipCount = 0;
+
                         if (files.length === 0) {
                             alert("No files selected.");
                         } else {
                             const fileUrl = files[0].originalFile.fileUrl;
 
-                            axios.post(
-                                `http://192.168.40.131:3000/search/photo?skip=${0}&limit=${6}`,
+                            const { data: { posts, count }} = await axios.post(
+                                `http://192.168.40.131:3000/search/photo?skip=${this.skipCount}&limit=${6}`,
                                 { url: fileUrl },
-                            ).then(response => {
-                                this.posts = response.data.posts;
-                                this.countOfPages = response.data.count;
+                            )
 
-                                console.log(this.posts);
-                                console.log(response.data);
-                            }).catch(error => {
-                                console.log(error.message);
-                            });
+                            this.posts = posts;
+                            this.countOfPages = count;
                         }
                     }
                 })
             }
         },
 
-        search: function () {
-            axios.post('http://192.168.40.131:3000/search/text', { text: this.searchData })
+        search: async function () {
+            this.skipCount = 0;
+            await axios.post(`http://192.168.40.131:3000/search/text?skip=${this.skipCount}&limit=${6}`, { text: this.searchData })
                 .then(response => {
                     console.log(response.data);
-                    // this.posts = response.data;
+                    this.posts = response.data;
                 })
                 .catch(error => {
                     alert('Ինչ որ բան սխալ ընթացավ');
@@ -158,6 +159,30 @@ export default {
                     }
                 }
             })
+        },
+
+        latex: function (event) {
+            openUploadModal({
+                event,
+                uploader,
+                options: {
+                    multi: false
+                },
+                onComplete: async (files) => {
+                    if (files.length === 0) {
+                        alert("No files selected.");
+                    } else {
+                        const fileUrl = files[0].originalFile.fileUrl;
+                        const { data: { latex } } = await axios.post(
+                            'http://192.168.40.131:3000/photo/solution',
+                            { url: fileUrl }
+                        )
+
+                        localStorage.setItem('pictureLatex', latex);
+                        window.location.href = '/wolfram/solution';
+                    }
+                }
+            })
         }
     },
 
@@ -166,6 +191,7 @@ export default {
             countOfPages: null,
             currentPage: null,
             searchData: null,
+            skipCount: null,
         }
     },
 }
@@ -189,6 +215,7 @@ export default {
     .department-data {
         text-decoration: none;
         color: inherit;
+        background-color: #f2f2f2;
     }
 
     .searchDiv {
