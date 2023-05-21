@@ -84,7 +84,7 @@ export default {
         },
 
         changeProfileData() {
-            axios.post('http://192.168.40.131:3000/profile', this.userData, { header: {'Authorization': `Bearer ${this.token}`} })
+            axios.post('http://localhost:3000/profile', this.userData, { header: {'Authorization': `Bearer ${this.token}`} })
                 .then(response => {
                     this.userData = response.data;
                 })
@@ -95,7 +95,7 @@ export default {
     },
 
     mounted() {
-        axios.get('http://192.168.40.131:3000/profile', { header: {'Authorization': `Bearer ${this.token}`} })
+        axios.get('http://localhost:3000/profile', { header: {'Authorization': `Bearer ${this.token}`} })
             .then(response => {
                 this.userData = response.data;
             })

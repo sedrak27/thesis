@@ -67,7 +67,7 @@ import axios from "axios";
 import { Uploader } from "uploader";
 import { openUploadModal } from "@upload-io/vue-uploader";
 
-const uploader = Uploader({ apiKey: "public_12a1yBb77WrwonUXggpcvxVJFRZg" });
+const uploader = Uploader({ apiKey: "public_W142huD9woZpiW8MqRVgVZ57J4SC" });
 
 export default {
     name: "AddSolution",
@@ -114,7 +114,7 @@ export default {
                     steps: this.steps,
                 })
 
-                axios.post('http://192.168.40.131:3000/posts', {
+                axios.post('http://localhost:3000/posts', {
                     title: formData.get('title'),
                     problem: formData.get('problem'),
                     category: formData.get('category'),
@@ -249,7 +249,7 @@ export default {
                         } else {
                             const fileUrl = files[0].originalFile.fileUrl;
                             const {data: {latex, wolfram}} = await axios.post(
-                                'http://192.168.40.131:3000/photo',
+                                'http://localhost:3000/photo',
                                 { url: fileUrl }
                             )
 
@@ -299,7 +299,7 @@ export default {
                     } else {
                         const fileUrl = files[0].originalFile.fileUrl;
                         const {data: {latex, wolfram}} = await axios.post(
-                            'http://192.168.40.131:3000/photo',
+                            'http://localhost:3000/photo',
                             { url: fileUrl }
                         )
 

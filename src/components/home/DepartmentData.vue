@@ -50,7 +50,7 @@ import axios from "axios";
 import { Uploader } from "uploader";
 import { openUploadModal } from "@upload-io/vue-uploader";
 
-const uploader = Uploader({ apiKey: 'public_12a1yBb77WrwonUXggpcvxVJFRZg' });
+const uploader = Uploader({ apiKey: 'public_W142huD9woZpiW8MqRVgVZ57J4SC' });
 
 export default {
     name: "DepartmentData",
@@ -67,7 +67,7 @@ export default {
             this.skipCount = 6 * (currentPage - 1);
 
             await axios.post(
-                `http://192.168.40.131:3000/posts/filter?skip=${this.skipCount}&limit=${6}`)
+                `http://localhost:3000/posts/filter?skip=${this.skipCount}&limit=${6}`)
                 .then(response => {
                     this.posts = response.data;
                 })
@@ -99,7 +99,7 @@ export default {
                             const fileUrl = files[0].originalFile.fileUrl;
 
                             const { data: { posts, count }} = await axios.post(
-                                `http://192.168.40.131:3000/search/photo?skip=${this.skipCount}&limit=${6}`,
+                                `http://localhost:3000/search/photo?skip=${this.skipCount}&limit=${6}`,
                                 { url: fileUrl },
                             )
 
@@ -113,7 +113,7 @@ export default {
 
         search: async function () {
             this.skipCount = 0;
-            await axios.post(`http://192.168.40.131:3000/search/text?skip=${this.skipCount}&limit=${6}`, { text: this.searchData })
+            await axios.post(`http://localhost:3000/search/text?skip=${this.skipCount}&limit=${6}`, { text: this.searchData })
                 .then(response => {
                     console.log(response.data);
                     this.posts = response.data;
@@ -150,7 +150,7 @@ export default {
                     } else {
                         const fileUrl = files[0].originalFile.fileUrl;
                         const { data: { images } } = await axios.post(
-                            'http://192.168.40.131:3000/photo/solution',
+                            'http://localhost:3000/photo/solution',
                             { url: fileUrl }
                         )
 
@@ -174,7 +174,7 @@ export default {
                     } else {
                         const fileUrl = files[0].originalFile.fileUrl;
                         const { data: { latex } } = await axios.post(
-                            'http://192.168.40.131:3000/photo/solution',
+                            'http://localhost:3000/photo/solution',
                             { url: fileUrl }
                         )
 

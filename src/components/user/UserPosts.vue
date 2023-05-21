@@ -52,7 +52,7 @@ export default {
         },
 
         getCurrentPage: function (currentPage) {
-            axios.get(`http://192.168.40.131:3000/user/posts?${localStorage.getItem('owner_id')}`, {
+            axios.get(`http://localhost:3000/user/posts?${localStorage.getItem('owner_id')}`, {
                 params: {
                     skip: 6 * (currentPage - 1),
                     limit: 6,
@@ -151,7 +151,7 @@ export default {
     },
 
     mounted() {
-        axios.post(`http://192.168.40.131:3000/posts/filter`, { owner_id: localStorage.getItem('owner_id') })
+        axios.post(`http://localhost:3000/posts/filter`, { owner_id: localStorage.getItem('owner_id') })
             .then(response => {
                 this.posts = response.data;
 

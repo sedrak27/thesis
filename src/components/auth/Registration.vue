@@ -58,7 +58,7 @@ export default {
     methods: {
 
         register: function () {
-            axios.post('http://192.168.40.131:3000/auth/signup', this.credential)
+            axios.post('http://localhost:3000/auth/signup', this.credential)
                 .then(response => {
                     localStorage.setItem('jwtToken', response.data);
 

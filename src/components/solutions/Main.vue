@@ -117,7 +117,7 @@ export default {
     },
 
     mounted() {
-        axios.get(`http://192.168.40.131:3000/posts/${localStorage.getItem('post_id')}`)
+        axios.get(`http://localhost:3000/posts/${localStorage.getItem('post_id')}`)
             .then(response => {
                 this.currentDepartmentData = response.data
                 console.log(this.currentDepartmentData);

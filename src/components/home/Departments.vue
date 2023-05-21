@@ -35,7 +35,7 @@ export default {
             event.target.style = 'background-color: rgb(255, 255, 255, .7); color: #2c3e50;';
 
             axios.post(
-                `http://192.168.40.131:3000/posts/filter?skip=${0}&limit=${6}`,
+                `http://localhost:3000/posts/filter?skip=${0}&limit=${6}`,
                 { category: this.propDepartments[event.target.value] }
             ).then(response => {
                 this.data = response.data;
@@ -124,7 +124,7 @@ export default {
     mounted() {
 
         console.log(this.propPage);
-        axios.post(`http://192.168.40.131:3000/posts/filter?skip=${0}&limit=${6}`)
+        axios.post(`http://localhost:3000/posts/filter?skip=${0}&limit=${6}`)
             .then(response => {
                 this.$emit('countOfPages', response.data.count);
                 this.$emit('posts', response.data.posts);
