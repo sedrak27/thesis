@@ -46,9 +46,15 @@ export default {
         },
 
         solution: function (post_id) {
-            localStorage.removeItem('post_id');
+            localStorage.removeItem('current_post');
 
-            localStorage.setItem('post_id', post_id);
+            axios.get(`http://localhost:3000/posts/${localStorage.getItem('post_id')}`)
+                .then(response => {
+                    localStorage.setItem('current_post', JSON.stringify(response.data));
+                })
+                .catch(error => {
+                    console.log(error.message);
+                })
         },
 
         getCurrentPage: function (currentPage) {

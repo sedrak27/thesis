@@ -12,7 +12,7 @@
         </div>
 
         <div class="department-data-parent col-lg-12 d-flex flex-column justify-content-start align-items-center mt-5" ref="propDepartmentDataParent">
-            <router-link v-for="post of searchPostsResult && searchPostsResult.length !== 0 ? searchPostsResult : propPosts" @click="solution(post._id)" class="department-data text-center col-lg-12 pt-2 pb-2 d-flex justify-content-around" ref="posts" to="/solution">
+            <div v-for="post of searchPostsResult && searchPostsResult.length !== 0 ? searchPostsResult : propPosts" @click="changeRout(post._id)" class="department-data text-center col-lg-12 pt-2 pb-2 d-flex justify-content-around" ref="posts" to="/solution">
                 <div class="col-lg-2">
                     <img v-if="post.cover_url" :src="post.cover_url" :alt="post.cover_url" width="150" height="75">
                 </div>
@@ -29,13 +29,14 @@
                 <div class="col-lg-2 d-flex justify-content-center align-items-center">
                     <p>{{ post.created.slice(0, 10) }}</p>
                 </div>
-            </router-link>
+            </div>
 
             <hr>
 
             <Pagination
-                    :prop-count="propPagesCount"
-                    v-on:currentPage="getCurrentPage"
+                class="pagination"
+                :prop-count="propPagesCount"
+                v-on:currentPage="getCurrentPage"
             ></Pagination>
 
             <RouterView />
@@ -71,14 +72,27 @@ export default {
                     this.searchPostsResult = response.data.posts;
                 })
                 .catch(error => {
-                    console.error(error);
+                    console.error(error.message);
                 });
         },
 
-        solution: function (post_id) {
-            localStorage.removeItem('post_id');
+        solution: async function (post_id) {
+            localStorage.removeItem('current_solution');
 
-            localStorage.setItem('post_id', post_id);
+            try {
+                localStorage.removeItem('current_solution');
+
+                const response = await axios.get(`http://localhost:3000/posts/${post_id}`);
+
+                localStorage.setItem('current_solution', JSON.stringify(response.data));
+            } catch (error) {
+                console.log(error.message);
+            }
+        },
+
+        changeRout: async function (post_id) {
+            await this.solution(post_id);
+            this.$router.push('/solution');
         },
 
         uploadFile(event) {
@@ -92,16 +106,14 @@ export default {
                     onComplete: async (files) => {
                         this.skipCount = 0;
 
-                        if (files.length === 0) {
-                            alert("No files selected.");
-                        } else {
+                        if (files.length !== 0) {
                             const fileUrl = files[0].originalFile.fileUrl;
 
                             const { data: { posts, count }} = await axios.post(
                                 `http://localhost:3000/search/photo?skip=${this.skipCount}&limit=${6}`,
                                 { url: fileUrl },
                             )
-                            alert('aaaaaaa' + count)
+
                             this.posts = posts;
                             this.countOfPages = count;
                         }
@@ -119,7 +131,6 @@ export default {
                 })
                 .catch(error => {
                     console.log(error.message);
-                    //alert('Ինչ որ բան սխալ ընթացավ');
                 });
 
             this.$emit('currentPage', this.pageName);
@@ -145,9 +156,7 @@ export default {
                     multi: false
                 },
                 onComplete: async (files) => {
-                    if (files.length === 0) {
-                        alert("No files selected.");
-                    } else {
+                    if (files.length !== 0) {
                         const fileUrl = files[0].originalFile.fileUrl;
                         const { data: { images } } = await axios.post(
                             'http://localhost:3000/photo/solution',
@@ -169,17 +178,15 @@ export default {
                     multi: false
                 },
                 onComplete: async (files) => {
-                    if (files.length === 0) {
-                        alert("No files selected.");
-                    } else {
+                    if (files.length !== 0) {
                         const fileUrl = files[0].originalFile.fileUrl;
-                        const { data: { latex } } = await axios.post(
+                        const data = await axios.post(
                             'http://localhost:3000/photo/solution',
                             { url: fileUrl }
                         )
-
-                        localStorage.setItem('pictureLatex', latex);
-                        window.location.href = '/wolfram/solution';
+                        console.log(data);
+                        //localStorage.setItem('latex', latex);
+                        //window.location.href = '/wolfram/solution';
                     }
                 }
             })
@@ -194,6 +201,11 @@ export default {
             skipCount: null,
             searchPostsResult: null
         }
+    },
+
+
+    beforeDestroy() {
+        localStorage.clear();
     },
 }
 </script>
@@ -225,6 +237,16 @@ export default {
 
     .user-name {
         color: inherit;
+    }
+
+    .department-data-parent {
+        position: relative;
+    }
+
+    .pagination {
+        position: absolute;
+        bottom: 70px;
+        width: 100%;
     }
 
 </style>

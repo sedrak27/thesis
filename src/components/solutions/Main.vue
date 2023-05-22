@@ -11,7 +11,7 @@
                         </h5>
                         <hr>
                         <div id="formData">
-                            <div class="row" ref="body">
+                            <div class="row">
                                 <div class="mb-3">
                                     <label for="title" class="form-label">Վերնագիր</label>
                                     <input class="form-control" id="title" :value="currentDepartmentData.post.title"
@@ -29,8 +29,8 @@
                                     <div class="d-flex">
                                         <img v-if="currentDepartmentData.post.cover_url"
                                              :src="currentDepartmentData.post.cover_url" class="problem-picture"
-                                             ref="problemPicture" alt="problem-picture">
-                                        <textarea class="form-control" id="problem" rows="3" ref="problem" name="problem" disabled>{{ currentDepartmentData.post.problem }}</textarea>
+                                             alt="problem-picture">
+                                        <textarea class="form-control" id="problem" rows="3" name="problem" disabled>{{ currentDepartmentData.post.problem }}</textarea>
                                     </div>
                                 </div>
 
@@ -44,7 +44,7 @@
                                     <div v-for="step of currentDepartmentData.steps" class="mt-3">
                                         <div class="col-lg-12 d-flex">
                                             <img v-if="step.content_url" :src="step.content_url" :alt="step.content_url">
-                                            <textarea class="form-control" id="problem" rows="3" ref="problem" name="problem" disabled>{{ step.title }}</textarea>
+                                            <textarea class="form-control" id="problem" rows="3" name="problem" disabled>{{ step.title }}</textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -55,6 +55,8 @@
             </div>
         </div>
     </div>
+    {{ currentDepartmentData }}
+
 </template>
 
 <script>
@@ -71,62 +73,13 @@ export default {
 
     data() {
         return {
-            departmentData: null,
-            currentDepartmentData: {
-                post: {
-                    _id: '644faca0da8a66bd4cd7e2a9',
-                    owner_id: '644d7f27fcab5bbba42fc9de',
-                    title: 'vernagir',
-                    description: 'nkaragrutyun',
-                    problem: 'problem chka axpers',
-                    category: 'Mathem',
-                    first_name: 'Babken',
-                    last_name: 'Babkenyan',
-                    created: '2023-05-01T12:12:16.564Z',
-                },
-                steps: [
-                    {
-                        title: 'a+b=babken',
-                        content_url: 'src/assets/pictures/solution1.jpg',
-                    },
-                    {
-                        title: 'a+b=babken',
-                        content_url: 'src/assets/pictures/solution1.jpg',
-                    },
-                    {
-                        title: 'a+b=babken'
-                    },
-                    {
-                        title: 'a+b=babken',
-                        content_url: 'src/assets/pictures/solution2.jpg',
-                    },
-                    {
-                        title: 'a+b=babken'
-                    },
-                    {
-                        title: 'a+b=babken',
-                        content_url: 'src/assets/pictures/solution3.jpg',
-
-                    },
-                    {
-                        title: 'a+b=babken'
-                    },
-                ],
-            },
+            currentDepartmentData: JSON.parse(localStorage.getItem('current_solution')),
         }
     },
 
     mounted() {
-        axios.get(`http://localhost:3000/posts/${localStorage.getItem('post_id')}`)
-            .then(response => {
-                this.currentDepartmentData = response.data
-                console.log(this.currentDepartmentData);
-            })
-            .catch(error => {
-
-            })
+        console.log(this.currentDepartmentData)
     }
-
 }
 </script>
 

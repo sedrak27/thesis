@@ -160,9 +160,8 @@ export default {
                 textarea.classList.add('text');
 
                 div.appendChild(textarea);
-                //div.appendChild(this.removeButton(this));
+                div.appendChild(this.removeButtonAction(this));
 
-                console.log(this.$refs.solutions);
                 this.$refs.solutions.appendChild(div);
 
                 this.saveButton = true;
@@ -226,13 +225,13 @@ export default {
             div.appendChild(parentThis.solutionImage);
             div.appendChild(textarea);
             div.appendChild(editButton);
-            //div.appendChild(this.removeButton(parentThis));
+            div.appendChild(this.removeButtonAction(parentThis));
 
             imageSolutionDiv.appendChild(div);
 
             parentThis.$refs.solutions.appendChild(imageSolutionDiv)
 
-            // parentThis.div.appendChild(imageSolutionDiv);
+            parentThis.div.appendChild(imageSolutionDiv);
         },
 
         uploadFile(event) {
@@ -244,9 +243,7 @@ export default {
                         multi: false
                     },
                     onComplete: async (files) => {
-                        if (files.length === 0) {
-                            alert("No files selected.");
-                        } else {
+                        if (files.length !== 0) {
                             const fileUrl = files[0].originalFile.fileUrl;
                             const {data: {latex, wolfram}} = await axios.post(
                                 'http://localhost:3000/photo',
@@ -266,7 +263,7 @@ export default {
             }
         },
 
-        removeButton: function (parentThis) {
+        removeButtonAction: function (parentThis) {
             const deleteButton = document.createElement('button');
             deleteButton.innerText = 'Հեռացնել';
             deleteButton.classList.add('btn', 'btn-danger');
@@ -294,9 +291,7 @@ export default {
                     multi: false
                 },
                 onComplete: async (files) => {
-                    if (files.length === 0) {
-                        alert("No files selected.");
-                    } else {
+                    if (files.length !== 0) {
                         const fileUrl = files[0].originalFile.fileUrl;
                         const {data: {latex, wolfram}} = await axios.post(
                             'http://localhost:3000/photo',
@@ -309,8 +304,6 @@ export default {
                         this.cover_url = fileUrl;
 
                         this.removeButton = true;
-
-                        alert(this.removeButton)
                     }
                 }
             })

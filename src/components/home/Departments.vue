@@ -40,7 +40,7 @@ export default {
             ).then(response => {
                 this.data = response.data;
             }).catch(error => {
-                console.log(error);
+                console.log(errormessage);
             });
 
             this.$emit('posts', this.data.posts);
@@ -54,7 +54,6 @@ export default {
     },
 
     mounted() {
-        console.log(this.propPage);
         axios.post(`http://localhost:3000/posts/filter?skip=${0}&limit=${6}`)
             .then(response => {
                 this.$emit('countOfPages', response.data.count);

@@ -49,10 +49,6 @@ export default {
             countOfPages: 0,
         }
     },
-
-    mounted() {
-        console.log(this.departmentPagesCount);
-    }
 }
 </script>
 

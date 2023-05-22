@@ -50,7 +50,7 @@ export default {
                     window.location.href = '/posts';
                 })
                 .catch(error => {
-                    alert('sxal a ara');
+                    console.log(error.message)
                 });
 
             this.$emit('currentPage', this.pageName);

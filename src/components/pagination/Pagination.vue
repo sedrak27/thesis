@@ -20,7 +20,6 @@ export default {
 
     methods: {
         next: function () {
-            alert(this.propCount)
             for (const page of this.pages) {
                 page.style.backgroundColor = null;
                 page.style.color = null;
@@ -116,7 +115,6 @@ export default {
 
     ul {
         position: absolute;
-
         background-color: #f1f1f1;
     }
 </style>
