@@ -81,6 +81,7 @@ export default {
             saveButton: false,
             removeButton:false,
             solutionImage: null,
+            problem: null,
             solutionImageAsText: null,
             solutionDiv: null,
             cover_url: null,
@@ -96,27 +97,15 @@ export default {
 
     methods: {
         saveSolutions() {
-
-
-
             this.checkFields(this.$refs);
 
             if (!this.saveButton && this.$refs.solutions.hasChildNodes()) {
                 const form = document.getElementById("formData");
                 const formData = new FormData(form);
 
-                console.log({
-                    title: formData.get('title'),
-                    problem: formData.get('problem'),
-                    category: formData.get('category'),
-                    cover_url: this.cover_url,
-                    description: formData.get('description'),
-                    steps: this.steps,
-                })
-
                 axios.post('http://localhost:3000/posts', {
                     title: formData.get('title'),
-                    problem: formData.get('problem'),
+                    problem: this.problem,
                     category: formData.get('category'),
                     cover_url: this.cover_url,
                     description: formData.get('description'),
@@ -126,7 +115,7 @@ export default {
                 }).then(response => {
                     this.userData = response.data;
 
-                    window.location.href = '/posts';
+                    //window.location.href = '/posts';
                 }).catch(error => {
                     console.log(error);
                 });
@@ -300,9 +289,8 @@ export default {
 
                         this.$refs.problem.textContent = `${latex ? `Latex \n ${latex}` : ''} \n\n ${wolfram ? `Wolfram \n ${wolfram}` : ''} \n\n`;
                         this.$refs.problemPicture.setAttribute('src', fileUrl);
-
+                        this.problem = latex;
                         this.cover_url = fileUrl;
-
                         this.removeButton = true;
                     }
                 }
