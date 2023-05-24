@@ -115,7 +115,7 @@ export default {
                 }).then(response => {
                     this.userData = response.data;
 
-                    //window.location.href = '/posts';
+                    window.location.href = '/posts';
                 }).catch(error => {
                     console.log(error);
                 });

@@ -1,8 +1,8 @@
 <template>
     <div class="col-lg-11">
-        <div class="spinner-border text-info" role="status">
-            <span class="sr-only"></span>
-        </div>
+<!--        <div class="spinner-border text-info" role="status">-->
+<!--            <span class="sr-only"></span>-->
+<!--        </div>-->
         <div class="searchDiv col-lg-11 d-flex justify-content-center mt-3">
             <button class="btn btn-warning" type="button" @click="wolfram">Լուծել Wolfram֊ով</button> &nbsp;&nbsp;
             <button class="btn btn-warning" type="button" @click="latex">Ստանալ Latex֊ը</button> &nbsp;&nbsp;
