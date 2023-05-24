@@ -12,7 +12,7 @@
         </div>
 
         <div class="department-data-parent col-lg-12 d-flex flex-column justify-content-start align-items-center mt-5" ref="propDepartmentDataParent">
-            <div v-for="post of searchPostsResult && searchPostsResult.length !== 0 ? searchPostsResult : propPosts" @click="changeRout(post._id)" class="department-data text-center col-lg-12 pt-2 pb-2 d-flex justify-content-around" ref="posts" to="/solution">
+            <div v-for="post of searchPostsResult && searchPostsResult.length !== 0  && searchData ? searchPostsResult : propPosts" @click="changeRout(post._id)" class="department-data text-center col-lg-12 pt-2 pb-2 d-flex justify-content-around" ref="posts" to="/solution">
                 <div class="col-lg-2">
                     <img v-if="post.cover_url" :src="post.cover_url" :alt="post.cover_url" width="150" height="75">
                 </div>
@@ -114,7 +114,7 @@ export default {
                                 { url: fileUrl },
                             )
 
-                            this.posts = posts;
+                            this.searchPostsResult = posts;
                             this.countOfPages = count;
                         }
                     }
@@ -180,13 +180,13 @@ export default {
                 onComplete: async (files) => {
                     if (files.length !== 0) {
                         const fileUrl = files[0].originalFile.fileUrl;
-                        const data = await axios.post(
-                            'http://localhost:3000/photo/solution',
+                        const {data: {latex}} = await axios.post(
+                            'http://localhost:3000/photo',
                             { url: fileUrl }
                         )
-                        console.log(data);
-                        //localStorage.setItem('latex', latex);
-                        //window.location.href = '/wolfram/solution';
+                        alert(latex)
+                        localStorage.setItem('latex', latex);
+                        window.location.href = '/latex';
                     }
                 }
             })

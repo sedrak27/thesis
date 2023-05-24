@@ -13,11 +13,11 @@
                     </li>
 
                     <li class="nav-item" v-if="!isAuthorized">
-                        <router-link class="nav-link text-light" to="/login">Sign In</router-link>
+                        <router-link class="nav-link text-light" to="/login">Մուտք գործել</router-link>
                     </li>
 
                     <li class="nav-item" v-if="!isAuthorized">
-                        <router-link class="nav-link text-light" to="/registration">Sign Up</router-link>
+                        <router-link class="nav-link text-light" to="/registration">Գրանցվել</router-link>
                     </li>
 
                     <li class="nav-item" v-if="isAuthorized">
@@ -25,7 +25,7 @@
                     </li>
                 </ul>
 
-                <router-link v-if="isAuthorized" class="btn btn-primary" to="/login" @click="logout">Logout</router-link>
+                <router-link v-if="isAuthorized" class="btn btn-primary" to="/login" @click="logout">Դուրս գալ</router-link>
             </div>
         </div>
     </nav>

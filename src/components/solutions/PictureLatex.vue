@@ -22,7 +22,7 @@ export default {
 
     data() {
         return {
-            latex: JSON.parse(localStorage.getItem('latex')),
+            latex: localStorage.getItem('latex'),
         }
     },
 }

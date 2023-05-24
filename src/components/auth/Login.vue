@@ -5,20 +5,20 @@
                 <div class="col-lg-12 text-black d-flex">
                     <div class="form-group d-flex align-items-center justify-content-center h-custom-2 col-lg-6 px-5 ms-xl-4 pt-xl-0 mt-xl-n5">
                         <form @submit.prevent="login">
-                            <h3 class="fw-normal mb-3 pb-3 text-light">Sign In</h3>
+                            <h3 class="fw-normal mb-3 pb-3 text-light">Մուտք Գործել</h3>
 
                             <div class="form-outline mb-4">
                                 <input type="email" id="form2Example18" class="form-control form-control-lg" v-model="credential.email"/>
-                                <label class="form-label text-light" for="form2Example18">Email address</label>
+                                <label class="form-label text-light" for="form2Example18">Էլ․ հասցե</label>
                             </div>
 
                             <div class="form-outline mb-4">
                                 <input type="password" id="form2Example28" class="form-control form-control-lg" v-model="credential.password"/>
-                                <label class="form-label text-light" for="form2Example28">Password</label>
+                                <label class="form-label text-light" for="form2Example28">Գաղտնաբառ</label>
                             </div>
 
                             <div class="pt-1 mb-4 d-flex justify-content-between">
-                                <button type="submit" class="text-light btn btn-info btn-lg btn-block">Login
+                                <button type="submit" class="text-light btn btn-info btn-lg btn-block">Մուտք
                                 </button>
                             </div>
                         </form>

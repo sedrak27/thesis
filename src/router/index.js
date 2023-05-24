@@ -8,6 +8,7 @@ import AddSolution from "@/components/solutions/AddSolution.vue";
 import Main from "@/components/solutions/Main.vue";
 import UserPosts from "@/components/user/UserPosts.vue";
 import PictureSolution from "@/components/solutions/PictureSolution.vue";
+import PictureLatex from "@/components/solutions/PictureLatex.vue";
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -62,6 +63,11 @@ const router = createRouter({
       path: '/wolfram/solution',
       name: 'PictureSolution',
       component: PictureSolution,
+    },
+    {
+      path: '/latex',
+      name: 'PictureLatex',
+      component: PictureLatex,
     },
   ]
 })
