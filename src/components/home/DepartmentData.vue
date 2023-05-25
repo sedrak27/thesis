@@ -1,8 +1,8 @@
 <template>
     <div class="col-lg-11">
-<!--        <div class="spinner-border text-info" role="status">-->
-<!--            <span class="sr-only"></span>-->
-<!--        </div>-->
+        <div id="spinner-border" class="spinner-border text-info" role="status">
+            <span class="sr-only"></span>
+        </div>
         <div class="searchDiv col-lg-11 d-flex justify-content-center mt-3">
             <button class="btn btn-warning" type="button" @click="wolfram">Լուծել Wolfram֊ով</button> &nbsp;&nbsp;
             <button class="btn btn-warning" type="button" @click="latex">Ստանալ Latex֊ը</button> &nbsp;&nbsp;
@@ -152,6 +152,8 @@ export default {
         },
 
         wolfram: function (event) {
+            let loading = document.getElementById('spinner-border');
+
             openUploadModal({
                 event,
                 uploader,
@@ -159,6 +161,8 @@ export default {
                     multi: false
                 },
                 onComplete: async (files) => {
+                    loading.style = 'display: block';
+
                     if (files.length !== 0) {
                         const fileUrl = files[0].originalFile.fileUrl;
                         const { data: { images } } = await axios.post(
@@ -167,13 +171,20 @@ export default {
                         )
 
                         localStorage.setItem('wolframSolutionImages', JSON.stringify(images));
+
+                        loading.style = 'display: none';
+
                         window.location.href = '/wolfram/solution';
+                    } else {
+                        loading.style = 'display: none';
                     }
                 }
             })
         },
 
         latex: function (event) {
+            let loading = document.getElementById('spinner-border');
+
             openUploadModal({
                 event,
                 uploader,
@@ -181,15 +192,21 @@ export default {
                     multi: false
                 },
                 onComplete: async (files) => {
+                    loading.style = 'display: block';
+
                     if (files.length !== 0) {
                         const fileUrl = files[0].originalFile.fileUrl;
                         const {data: {latex}} = await axios.post(
                             'http://localhost:3000/photo',
                             { url: fileUrl }
                         )
-                        alert(latex)
                         localStorage.setItem('latex', latex);
+
+                        loading.style = 'display: none';
+
                         window.location.href = '/latex';
+                    } else {
+                        loading.style = 'display: none';
                     }
                 }
             })
@@ -202,7 +219,7 @@ export default {
             currentPage: null,
             searchData: null,
             skipCount: null,
-            searchPostsResult: null
+            searchPostsResult: null,
         }
     },
 
@@ -250,6 +267,16 @@ export default {
         position: absolute;
         bottom: 70px;
         width: 100%;
+    }
+
+    #spinner-border {
+        display: none;
+        width: 300px;
+        height: 300px;
+        position: absolute;
+        z-index: 5;
+        right: 40%;
+        top: 30%;
     }
 
 </style>
